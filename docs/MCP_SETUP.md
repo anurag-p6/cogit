@@ -15,19 +15,19 @@
 ```json
 {
   "mcpServers": {
-    "contextgit": { "command": "node", "args": ["<repo>/packages/mcp/dist/index.js"], "cwd": "<your-project>" }
+    "cogit": { "command": "node", "args": ["<repo>/packages/mcp/dist/index.js"], "cwd": "<your-project>" }
   }
 }
 ```
 
 ## Cursor config
 
-Settings → MCP → Add server → `contextgit`, command `node <repo>/packages/mcp/dist/index.js`.
+Settings → MCP → Add server → `cogit`, command `node <repo>/packages/mcp/dist/index.js`.
 
 ## Agent snippet (paste into `CLAUDE.md` / agent rules)
 
 ```
-You have ContextGit memory. After every decision, call context_commit.
+You have Cogit memory. After every decision, call context_commit.
 Before work depending on a teammate, call context_pull for their branch and follow it.
 Never use unverified context.
 ```

@@ -1,4 +1,4 @@
-# ContextGit v2 — Build Spec (3 features only)
+# Cogit — Build Spec (3 features only)
 
 > Coding agent: read this file fully, then build milestone by milestone.
 > Scope = F1 + F2 + F3 only. Nothing else.
@@ -29,7 +29,7 @@
 | `viem` | `2.57.7` | wallet + `signMessage` / recover |
 | `@noble/ciphers` | `2.4.0` | XChaCha20-Poly1305 |
 | `@noble/hashes` | `2.4.0` | sha256 |
-| `commander` | `15.0.0` | `cgit` CLI |
+| `commander` | `15.0.0` | `cogit` CLI |
 | `@modelcontextprotocol/sdk` | `1.32.1` | MCP server (stdio) |
 | `react` | `19.3.1` | viewer |
 | `vite` | `8.3.4` | viewer build |
@@ -41,12 +41,12 @@ Install with exact versions, e.g. `pnpm add @arkiv-network/sdk@0.8.1 viem@2.57.7
 Arkiv network: Tiramisu testnet (chain ID `7738577`, RPC `https://rpc.tiramisu.db-chain.testnet.arkiv.network`, 2s blocks).
 
 ```
-contextgit/
+cogit/
   SPEC.md  README.md  .env.example
   docs/  ARKIV_NOTES.md  FRICTION_LOG.md  MCP_SETUP.md
   packages/
     core/     # schema, crypto, arkiv wrapper, verify, graph
-    cli/      # `cgit`
+    cli/      # `cogit`
     mcp/      # MCP server
     viewer/   # website
   scripts/  spike.ts  seed.ts
@@ -72,7 +72,7 @@ Body: `{summary, details (markdown), tags[]}`. Envelope payload:
 - `commitHash = sha256(canonicalJSON({v,repoId,branch,parent,author,kind,ts,nonce,ciphertextHash}))`, canonical = sorted keys, no whitespace.
 - `sig` = wallet `signMessage(commitHash)`.
 - Flow: build → encrypt → hash → sign → write Commit entity → update Branch `head`.
-- Key sharing: `cgit invite <addr>` prints `repoId+key`, adds member; `cgit join <invite>` saves to `.cgit/config.json` (mode 600). Keep bodies small (payload ≤128 KiB); truncate `details` with marker if needed.
+- Key sharing: `cogit invite <addr>` prints an invite string `cogit1:<repoId>:<base64url(groupKey)>` and adds the address to the Repo members list; `cogit join <invite>` saves it to `.cogit/config.json` (mode 600). Keep bodies small (payload ≤128 KiB); truncate `details` with marker if needed.
 
 ## Verify (F2 + F3 use this)
 
@@ -81,10 +81,10 @@ Order: `BAD_HASH` (recomputed ≠ envelope) → `BAD_SIGNATURE` (recovers ≠ au
 ## F2 — CLI + MCP
 
 ```
-cgit init <name> | invite <addr> | join <invite> | branch <name> | use <branch>
-cgit commit -m "<summary>" [--details-file f] [--kind decision] [--tag t]...
-cgit pull <branch> [--out file]   # verified markdown → .cgit/context/<branch>.md + stdout, oldest first
-cgit log [--branch b]             # commits + verified/invalid status
+cogit init <name> | invite <addr> | join <invite> | branch <name> | use <branch>
+cogit commit -m "<summary>" [--details-file f] [--kind decision] [--tag t]...
+cogit pull <branch> [--out file]   # verified markdown → .cogit/context/<branch>.md + stdout, oldest first
+cogit log [--branch b]             # commits + verified/invalid status
 ```
 
 MCP tools (stdio): `context_commit(summary,details?,kind?,tags?)`, `context_pull(branch,kind?,tag?)`, `context_log(branch?,n?)`. Descriptions must say when to use them. Setup + `CLAUDE.md` snippet in [docs/MCP_SETUP.md](docs/MCP_SETUP.md).

@@ -1,0 +1,24 @@
+{
+  "name": "cogit",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.28.1",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "spike": "tsx scripts/spike.ts",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@arkiv-network/sdk": "0.8.1",
+    "viem": "2.57.7"
+  },
+  "devDependencies": {
+    "@types/node": "26.6.5",
+    "dotenv": "18.0.8",
+    "tsx": "4.23.15",
+    "typescript": "7.0.2"
+  }
+}
