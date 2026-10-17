@@ -1,7 +1,5 @@
 import { ciphertextHash, computeCommitHash, recoverAuthor } from "./crypto.js";
-import type { CommitEnvelope } from "./types.js";
-
-export type VerifyFailureReason = "BAD_HASH" | "BAD_SIGNATURE" | "OWNER_MISMATCH" | "NOT_MEMBER";
+import type { CommitEnvelope, VerifyFailureReason } from "./types.js";
 
 export interface VerifyContext {
   owner?: string;

@@ -1,4 +1,3 @@
-import "dotenv/config";
 import {
   createPublicClient,
   createWalletClient,
@@ -9,10 +8,12 @@ import { tiramisu } from "@arkiv-network/sdk/chains";
 import { http } from "viem";
 import { privateKeyToAccount, type PrivateKeyAccount } from "viem/accounts";
 
-const rpcUrl = process.env.ARKIV_RPC_URL ?? tiramisu.rpcUrls.default.http[0];
+function rpcUrl(): string {
+  return process.env.ARKIV_RPC_URL ?? tiramisu.rpcUrls.default.http[0];
+}
 
 export function publicClient(): PublicArkivClient {
-  return createPublicClient({ chain: tiramisu, transport: http(rpcUrl) });
+  return createPublicClient({ chain: tiramisu, transport: http(rpcUrl()) });
 }
 
 export interface WalletContext {
@@ -31,7 +32,7 @@ export function walletContext(): WalletContext {
   return {
     account,
     address: account.address,
-    wallet: createWalletClient({ chain: tiramisu, transport: http(rpcUrl), account }),
+    wallet: createWalletClient({ chain: tiramisu, transport: http(rpcUrl()), account }),
     pub: publicClient(),
   };
 }

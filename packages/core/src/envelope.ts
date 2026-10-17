@@ -39,7 +39,6 @@ export async function buildCommitEnvelope(input: BuildEnvelopeInput): Promise<Co
 }
 
 const KINDS: readonly CommitKind[] = ["scratch", "note", "decision", "milestone"];
-const AGENTS: readonly AuthorAgent[] = ["claude-code", "cursor", "human"];
 
 export function parseCommitEnvelope(payload: string): CommitEnvelope {
   let raw: unknown;
@@ -69,8 +68,8 @@ export function parseCommitEnvelope(payload: string): CommitEnvelope {
   if (!KINDS.includes(e.kind as CommitKind)) {
     throw new Error(`unknown commit kind: ${String(e.kind)}`);
   }
-  if (!AGENTS.includes(e.agent as AuthorAgent)) {
-    throw new Error(`unknown agent: ${String(e.agent)}`);
+  if (typeof e.agent !== "string" || e.agent === "" || Buffer.byteLength(e.agent, "utf8") > 32) {
+    throw new Error("commit envelope field agent must be a short non-empty string");
   }
   return e as unknown as CommitEnvelope;
 }

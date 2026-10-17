@@ -1,3 +1,4 @@
+import "dotenv/config";
 import { Command } from "commander";
 import { KIND_EXPIRY_DAYS, type CommitKind } from "@cogit/core";
 import {

@@ -3,46 +3,26 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { jsonToPayload } from "@arkiv-network/sdk";
 import type { Hex } from "viem";
 import {
-  KIND_EXPIRY_DAYS,
-  buildCommitEnvelope,
+  commitContext,
   createBranch,
-  createCommit,
   createRepo,
   decodeInvite,
-  decryptBody,
   encodeInvite,
   findBranch,
   findRepo,
   fromBase64,
-  listCommits,
+  logContext,
   newGroupKey,
+  publicClient,
+  pullContext,
+  readConfig,
+  renderLogLine,
+  shortHex,
   toBase64,
-  updateBranchHead,
-  verifyEnvelope,
-  type CommitBody,
-  type CommitKind,
+  walletContext,
+  writeConfig,
+  writeContextFile,
 } from "@cogit/core";
-import { publicClient, walletContext } from "./clients.js";
-import { renderCommitSection, renderLogLine, renderPullMarkdown, shortHex } from "./render.js";
-import { readConfig, writeConfig, writeContextFile } from "./store.js";
-
-const KINDS = Object.keys(KIND_EXPIRY_DAYS) as CommitKind[];
-const MAX_DETAILS_BYTES = 96 * 1024;
-
-function assertKind(kind: string): CommitKind {
-  if (!(KINDS as string[]).includes(kind)) {
-    throw new Error(`invalid kind "${kind}" — one of: ${KINDS.join(", ")}`);
-  }
-  return kind as CommitKind;
-}
-
-function capDetails(details: string): string {
-  if (Buffer.byteLength(details, "utf8") <= MAX_DETAILS_BYTES) {
-    return details;
-  }
-  const truncated = Buffer.from(details, "utf8").subarray(0, MAX_DETAILS_BYTES).toString("utf8");
-  return `${truncated}\n\n... [truncated by cogit to fit Arkiv's payload limit]`;
-}
 
 export async function runInit(name: string): Promise<void> {
   const { wallet, address } = walletContext();
@@ -126,31 +106,17 @@ export interface CommitOptions {
 
 export async function runCommit(opts: CommitOptions): Promise<void> {
   const config = readConfig();
-  const { pub, wallet, address, account } = walletContext();
-  const kind = assertKind(opts.kind);
-  let branch = await findBranch(pub, config.repoId, config.branch);
-  if (branch === null) {
-    await createBranch(wallet, { repoId: config.repoId, name: config.branch, owner: address, head: "" });
-    branch = await findBranch(pub, config.repoId, config.branch);
-    if (branch === null) {
-      throw new Error(`could not create branch "${config.branch}"`);
-    }
-  }
+  const { wallet, pub, address, account } = walletContext();
   const details = opts.detailsFile !== undefined ? readFileSync(opts.detailsFile, "utf8") : "";
-  const body: CommitBody = { summary: opts.message, details: capDetails(details), tags: opts.tags };
-  const envelope = await buildCommitEnvelope({
-    repoId: config.repoId,
-    branch: branch.name,
-    parent: branch.head === "" ? null : branch.head,
+  const result = await commitContext({
+    wallet,
+    pub,
     account,
-    agent: "human",
-    kind,
-    body,
-    groupKey: fromBase64(config.groupKey),
+    address,
+    config,
+    input: { message: opts.message, details, kind: opts.kind, tags: opts.tags, agent: "human" },
   });
-  await createCommit(wallet, envelope);
-  await updateBranchHead(wallet, branch.key, envelope.commitHash);
-  console.log(`committed ${shortHex(envelope.commitHash, 12)} to ${branch.name} (${kind})`);
+  console.log(`committed ${shortHex(result.commitHash, 12)} to ${result.branch} (${result.kind})`);
 }
 
 export interface PullOptions {
@@ -162,38 +128,16 @@ export interface PullOptions {
 export async function runPull(branchName: string, opts: PullOptions): Promise<void> {
   const config = readConfig();
   const pub = publicClient();
-  const repo = await findRepo(pub, config.repoId);
-  if (repo === null) {
+  const result = await pullContext({ pub, config, branch: branchName, kind: opts.kind, tag: opts.tag });
+  if (!result.membersChecked) {
     console.warn(`warning: repo ${config.repoId} not found on chain — skipping membership check`);
   }
-  const members = repo === null ? undefined : repo.members;
-  const kind = opts.kind === undefined ? undefined : assertKind(opts.kind);
-  const groupKey = fromBase64(config.groupKey);
-  const records = await listCommits(pub, config.repoId, branchName);
-  const sections: string[] = [];
-  let invalid = 0;
-  for (const record of records) {
-    const result = await verifyEnvelope(record.envelope, { owner: record.owner, members });
-    if (!result.ok) {
-      invalid += 1;
-      continue;
-    }
-    if (kind !== undefined && record.envelope.kind !== kind) {
-      continue;
-    }
-    const body = decryptBody(record.envelope.nonce, record.envelope.ciphertext, groupKey);
-    if (opts.tag !== undefined && !body.tags.includes(opts.tag)) {
-      continue;
-    }
-    sections.push(renderCommitSection(record.envelope, body));
-  }
-  const markdown = renderPullMarkdown(config.name, branchName, sections, invalid);
-  const outPath = opts.out ?? writeContextFile(branchName, markdown);
+  const outPath = opts.out ?? writeContextFile(branchName, result.markdown);
   if (opts.out !== undefined) {
-    writeFileSync(outPath, markdown);
+    writeFileSync(outPath, result.markdown);
   }
-  console.log(markdown);
-  console.error(`(${sections.length} verified commit(s) → ${outPath})`);
+  console.log(result.markdown);
+  console.error(`(${result.verified} verified commit(s) → ${outPath})`);
 }
 
 export interface LogOptions {
@@ -203,24 +147,12 @@ export interface LogOptions {
 export async function runLog(opts: LogOptions): Promise<void> {
   const config = readConfig();
   const pub = publicClient();
-  const repo = await findRepo(pub, config.repoId);
-  const members = repo === null ? undefined : repo.members;
-  const groupKey = fromBase64(config.groupKey);
-  const records = await listCommits(pub, config.repoId, opts.branch);
-  if (records.length === 0) {
+  const rows = await logContext({ pub, config, branch: opts.branch });
+  if (rows.length === 0) {
     console.log("no commits found");
     return;
   }
-  for (const record of records) {
-    const result = await verifyEnvelope(record.envelope, { owner: record.owner, members });
-    let body: CommitBody | undefined;
-    if (result.ok) {
-      try {
-        body = decryptBody(record.envelope.nonce, record.envelope.ciphertext, groupKey);
-      } catch {
-        body = undefined;
-      }
-    }
-    console.log(renderLogLine(record, result, body));
+  for (const row of rows) {
+    console.log(renderLogLine(row));
   }
 }

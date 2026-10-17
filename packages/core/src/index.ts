@@ -5,3 +5,7 @@ export * from "./envelope.js";
 export * from "./verify.js";
 export * from "./arkiv.js";
 export * from "./graph.js";
+export * from "./store.js";
+export * from "./render.js";
+export * from "./ops.js";
+export * from "./clients.js";

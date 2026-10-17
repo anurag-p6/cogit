@@ -1,6 +1,23 @@
 export type CommitKind = "scratch" | "note" | "decision" | "milestone";
 
-export type AuthorAgent = "claude-code" | "cursor" | "human";
+export type AuthorAgent = "claude-code" | "cursor" | "human" | (string & {});
+
+export type VerifyFailureReason = "BAD_HASH" | "BAD_SIGNATURE" | "OWNER_MISMATCH" | "NOT_MEMBER";
+
+export interface LogRow {
+  commitHash: string;
+  ts: number;
+  kind: CommitKind;
+  branch: string;
+  author: string;
+  agent: string;
+  parent: string | null;
+  status: "verified" | "invalid";
+  reason?: VerifyFailureReason;
+  detail?: string;
+  summary?: string;
+  tags?: string[];
+}
 
 export interface CommitBody {
   summary: string;

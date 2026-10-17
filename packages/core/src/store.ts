@@ -1,6 +1,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { COGIT_DIR, CONFIG_FILE, CONTEXT_DIR, type RepoConfig } from "@cogit/core";
+import { COGIT_DIR, CONFIG_FILE, CONTEXT_DIR } from "./config.js";
+import type { RepoConfig } from "./types.js";
 
 export function projectDir(): string {
   return process.env.COGIT_HOME ?? process.cwd();
@@ -13,7 +14,9 @@ export function configPath(): string {
 export function readConfig(): RepoConfig {
   const path = configPath();
   if (!existsSync(path)) {
-    throw new Error(`no ${COGIT_DIR}/${CONFIG_FILE} here — run \`cogit init <name>\` or \`cogit join <invite>\` first`);
+    throw new Error(
+      `no ${COGIT_DIR}/${CONFIG_FILE} here — run \`cogit init <name>\` or \`cogit join <invite>\` first`,
+    );
   }
   return JSON.parse(readFileSync(path, "utf8")) as RepoConfig;
 }

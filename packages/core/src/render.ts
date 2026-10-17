@@ -1,4 +1,4 @@
-import type { CommitBody, CommitEnvelope, CommitRecord, VerifyResult } from "@cogit/core";
+import type { CommitBody, CommitEnvelope, LogRow } from "./types.js";
 
 export function shortHex(hex: string, chars = 10): string {
   return hex.length <= chars + 2 ? hex : `${hex.slice(0, chars)}…`;
@@ -51,10 +51,9 @@ export function renderPullMarkdown(
   return lines.concat(sections).join("\n");
 }
 
-export function renderLogLine(record: CommitRecord, result: VerifyResult, body?: CommitBody): string {
-  const env = record.envelope;
-  const status = result.ok ? "verified" : `INVALID:${result.reason}`;
-  const summary = result.ok && body !== undefined ? body.summary : "";
-  const reason = result.ok ? "" : ` (${result.detail})`;
-  return `${status.padEnd(22)} ${shortHex(env.commitHash, 12).padEnd(14)} ${formatTs(env.ts)}  [${env.kind}] ${env.branch} ${shortHex(env.author, 8).padEnd(10)} ${summary}${reason}`.trimEnd();
+export function renderLogLine(row: LogRow): string {
+  const status = row.status === "verified" ? "verified" : `INVALID:${row.reason ?? "UNKNOWN"}`;
+  const summary = row.summary ?? "";
+  const detail = row.status === "verified" ? "" : ` (${row.detail ?? ""})`;
+  return `${status.padEnd(22)} ${shortHex(row.commitHash, 12).padEnd(14)} ${formatTs(row.ts)}  [${row.kind}] ${row.branch} ${shortHex(row.author, 8).padEnd(10)} ${summary}${detail}`.trimEnd();
 }

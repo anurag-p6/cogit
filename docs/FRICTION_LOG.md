@@ -61,3 +61,10 @@
 - Versions: @arkiv-network/sdk 0.8.1, viem 2.57.7, Node 22.22.2, tiramisu, 2026-10-17
 - Steps to reproduce: 1. `createEntity` with `new Uint8Array(131072)` payload (payload-limit stage of `pnpm spike`) 2. observe 413 at estimateGas; 3. repeat over `webSocket()` transport → `WebSocket request failed`.
 - Workaround: keep commit payload ≤ ~120 KiB (leaves headroom for attrs inside the 128 KiB entity cap); M1 truncates `details` accordingly.
+
+### F-8: Branch heads are single-writer by construction — a teammate's commit to your branch fails after the commit entity is already written
+- Expected: with the teammate wallet added to Repo `members`, commit → update Branch `head` just works (SPEC's member model suggests shared write access to branches).
+- Happened: teammate's agent committed to branch `main` (created by the inviter): `createEntity` for the Commit succeeded, then `patchEntity` on the Branch failed: `Transaction failed: entity 0x1bccd466…5775d6 is owned by 0x225Fd0b9…, not 0x1F3305F4…`. Membership gates nothing here — Arkiv enforces raw entity ownership (`NotOwner`) on patches, so only the wallet that created the Branch can advance its `head`. Result: two dangling Commit entities on chain (created before the failing head update) that `pull main` then surfaces but no Branch head references.
+- Versions: @arkiv-network/sdk 0.8.1, Node 22.22.2, tiramisu, 2026-10-17
+- Steps to reproduce: 1. `cogit init` as wallet A 2. `cogit invite` B's address; `cogit join` as B 3. as B: `cogit commit -m "x"` (still on default branch `main`) → tx reverts with `NotOwner`…, but a commit entity for "x" is already on chain.
+- Workaround: one branch per person (as the seed does): B runs `cogit branch <name> && cogit use <name>` before committing; `commitContext` now checks `branch.owner ≠ caller` *before* writing anything and throws a corrective message; MCP `context_commit` points agents at this fix.
