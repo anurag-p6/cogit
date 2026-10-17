@@ -10,6 +10,7 @@
   "scripts": {
     "spike": "tsx scripts/spike.ts",
     "cogit": "tsx packages/cli/src/index.ts",
+    "build": "node scripts/build.mjs",
     "test": "vitest run"
   },
   "dependencies": {
@@ -19,6 +20,7 @@
   "devDependencies": {
     "@types/node": "26.6.5",
     "dotenv": "18.0.8",
+    "esbuild": "0.28.2",
     "tsx": "4.23.15",
     "typescript": "7.0.2",
     "vitest": "5.0.5"

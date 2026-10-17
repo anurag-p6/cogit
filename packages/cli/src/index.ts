@@ -1,6 +1,7 @@
 import "dotenv/config";
 import { Command } from "commander";
 import { KIND_EXPIRY_DAYS, type CommitKind } from "@cogit/core";
+import pkg from "../package.json" with { type: "json" };
 import {
   runBranch,
   runCommit,
@@ -19,7 +20,7 @@ async function main(): Promise<void> {
   program
     .name("cogit")
     .description("Encrypted, wallet-signed team context on Arkiv")
-    .version("0.0.0");
+    .version(pkg.version);
 
   program
     .command("init")
