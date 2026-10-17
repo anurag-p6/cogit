@@ -1,0 +1,1200 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Cogit — encrypted team context on Arkiv</title>
+<meta name="description" content="Cogit commits short, encrypted, wallet-signed context entries to Arkiv. Teammates and their agents pull them verified; stale notes expire on their own." />
+<meta name="color-scheme" content="light" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..500&display=swap" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400..700&family=Geist+Mono:wght@400..600&display=swap" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<svg class="sprite" aria-hidden="true" focusable="false">
+  <symbol id="i-mark" viewBox="0 0 20 20">
+    <g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+      <path d="M10 2v5.2" />
+      <path d="M10 12.8V18" />
+      <circle cx="10" cy="10" r="2.4" />
+      <path d="M10 12.4v2.4" />
+      <circle cx="10" cy="4.4" r="1.7" />
+      <circle cx="10" cy="15.6" r="1.7" />
+    </g>
+  </symbol>
+  <symbol id="i-branch" viewBox="0 0 16 16">
+    <g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="4.5" cy="3.5" r="1.75" />
+      <circle cx="4.5" cy="12.5" r="1.75" />
+      <circle cx="11.5" cy="6.5" r="1.75" />
+      <path d="M4.5 5.25v5.5" />
+      <path d="M11.5 8.25c0 2.4-3.6 2.2-7 4.25" />
+    </g>
+  </symbol>
+  <symbol id="i-lock" viewBox="0 0 16 16">
+    <g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3.5" y="7" width="9" height="6.5" rx="1.5" />
+      <path d="M5.5 7V5.25a2.5 2.5 0 0 1 5 0V7" />
+      <path d="M8 9.75v1.5" />
+    </g>
+  </symbol>
+  <symbol id="i-shield" viewBox="0 0 16 16">
+    <g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M8 1.75 13.25 3.5v4.25c0 3.4-2.4 5.5-5.25 6.5-2.85-1-5.25-3.1-5.25-6.5V3.5L8 1.75Z" />
+      <path d="m5.9 8 1.5 1.5L10.4 6.4" />
+    </g>
+  </symbol>
+  <symbol id="i-check" viewBox="0 0 16 16">
+    <path d="m3.5 8.5 3 3 6-6.5" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />
+  </symbol>
+  <symbol id="i-copy" viewBox="0 0 16 16">
+    <g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="5.5" y="5.5" width="8" height="8" rx="1.5" />
+      <path d="M10.5 3.5v-.75A1.25 1.25 0 0 0 9.25 1.5h-6A1.75 1.75 0 0 0 1.5 3.25v6a1.25 1.25 0 0 0 1.25 1.25h.75" />
+    </g>
+  </symbol>
+  <symbol id="i-plus" viewBox="0 0 16 16">
+    <g stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+      <path d="M8 3.5v9" class="v" />
+      <path d="M3.5 8h9" />
+    </g>
+  </symbol>
+  <symbol id="i-terminal" viewBox="0 0 16 16">
+    <g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="1.75" y="2.75" width="12.5" height="10.5" rx="1.75" />
+      <path d="m4.75 6.5 2 1.75-2 1.75" />
+      <path d="M8.75 10.25h2.5" />
+    </g>
+  </symbol>
+  <symbol id="i-arrow" viewBox="0 0 16 16">
+    <g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M2.75 8h10" />
+      <path d="m9 4.5 3.5 3.5L9 11.5" />
+    </g>
+  </symbol>
+  <symbol id="i-node" viewBox="0 0 16 16">
+    <g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+      <circle cx="3.5" cy="8" r="1.75" />
+      <circle cx="12.5" cy="3.75" r="1.75" />
+      <circle cx="12.5" cy="12.25" r="1.75" />
+      <path d="M5 7.2 11 4.5" />
+      <path d="M5 8.8l6 2.7" />
+    </g>
+  </symbol>
+  <symbol id="i-clock" viewBox="0 0 16 16">
+    <g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="8" cy="8" r="6.25" />
+      <path d="M8 4.75V8l2.25 1.5" />
+    </g>
+  </symbol>
+  <symbol id="i-key" viewBox="0 0 16 16">
+    <g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="5" cy="10.75" r="2.75" />
+      <path d="m7 8.75 6-6" />
+      <path d="m10.5 5.25 1.75 1.75" />
+      <path d="m12 3.75 1.75 1.75" />
+    </g>
+  </symbol>
+  <symbol id="i-search" viewBox="0 0 16 16">
+    <g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+      <circle cx="7" cy="7" r="4.75" />
+      <path d="m10.5 10.5 3 3" />
+    </g>
+  </symbol>
+  <symbol id="i-refresh" viewBox="0 0 16 16">
+    <g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M13.25 8a5.25 5.25 0 1 1-1.6-3.8" />
+      <path d="M13.25 2v3h-3" />
+    </g>
+  </symbol>
+  <symbol id="i-doc" viewBox="0 0 16 16">
+    <g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 1.75h5.25L12.5 5v9.25h-8.5V1.75Z" />
+      <path d="M9.25 1.75V5h3.25" />
+      <path d="M6 8.5h4" />
+      <path d="M6 11h3" />
+    </g>
+  </symbol>
+</svg>
+
+<div class="ambient" aria-hidden="true">
+  <div class="ambient-grid"></div>
+  <div class="ambient-glow a"></div>
+  <div class="ambient-glow b"></div>
+</div>
+<div class="grain" aria-hidden="true"></div>
+
+<header class="nav" id="top">
+  <div class="wrap nav-in">
+    <a class="brand" href="#top">
+      <svg class="ic brand-mark"><use href="#i-mark" /></svg>
+      <span class="brand-word">cogit</span>
+      <span class="brand-sub">on arkiv</span>
+    </a>
+    <nav class="nav-links" aria-label="Sections">
+      <a href="#viewer">Viewer</a>
+      <a href="#pipeline">Pipeline</a>
+      <a href="#features">Features</a>
+      <a href="#agents">Agents</a>
+      <a href="#cli">CLI</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="nav-actions">
+      <span class="net-chip" title="Arkiv testnet">
+        <span class="pulse-dot"></span>
+        tiramisu
+        <span class="net-chip-id">7738577</span>
+      </span>
+      <a class="btn btn-ink btn-sm" href="#viewer">Open viewer</a>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div class="hero-copy" data-reveal>
+      <p class="eyebrow">Encrypted team context · Arkiv Tiramisu testnet</p>
+      <h1 class="display">Team memory for coding&nbsp;agents, kept like source&nbsp;history.</h1>
+      <p class="lede">Cogit commits short, encrypted context entries to Arkiv — from the CLI or straight out of your agent's tool loop. Teammates pull them verified, and stale notes expire on their own.</p>
+      <div class="hero-actions">
+        <a class="btn btn-ink" href="#viewer">
+          Open the viewer
+          <svg class="ic"><use href="#i-arrow" /></svg>
+        </a>
+        <a class="btn btn-ghost" href="#pipeline">How a commit moves</a>
+      </div>
+      <div class="cmd-chip">
+        <code><span class="cmd-dim">$</span> cogit pull anurag</code>
+        <button class="copy-btn" type="button" data-copy="cogit pull anurag" aria-label="Copy command">
+          <svg class="ic"><use href="#i-copy" /></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="hero-term" data-reveal>
+      <div class="term term-dark">
+        <div class="term-bar">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="term-title">anurag@atlas — cogit</span>
+        </div>
+        <div class="term-body">
+          <p><span class="t-prompt">$</span> <span class="t-cmd">cogit commit -m <span class="t-str">"Postgres + JSONB for the reports table"</span> --kind decision</span></p>
+          <p><span class="t-key">build</span>  envelope v1 · kind decision · agent claude-code</p>
+          <p><span class="t-key">seal</span>   xchacha20-poly1305 · 24-byte nonce · 412 B ciphertext</p>
+          <p><span class="t-key">hash</span>   0x7c9e1f…f5b8a4d2 <span class="t-dim">sha256 · canonical json</span></p>
+          <p><span class="t-key">sign</span>   wallet 0x225f…6af7 <span class="t-dim">signMessage(commitHash)</span></p>
+          <p><span class="t-key">write</span>  entity 0xb2a7…4ce0 · <span class="t-warn">expires in 90 d</span> <span class="t-dim">kind decision</span></p>
+          <p><span class="t-key">head</span>   branch main → 0x7c9e…a4d2</p>
+          <p class="t-gap"><span class="t-prompt">$</span> <span class="t-cmd">cogit pull ritesh</span></p>
+          <p><span class="t-ok">4 commits · 4 verified · 0 invalid</span> → .cogit/context/ritesh.md</p>
+          <p class="t-cursor-line"><span class="cursor"></span></p>
+        </div>
+      </div>
+      <p class="hero-term-note">Every write is wallet-signed, encrypted, and given an expiry by kind — shown verbatim from a seeded <span class="mono">atlas-reports</span> run.</p>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <dl class="meta-strip" data-reveal>
+      <div class="meta-cell">
+        <dt>Chain</dt>
+        <dd>tiramisu · 7738577</dd>
+      </div>
+      <div class="meta-cell">
+        <dt>Block time</dt>
+        <dd>2 s · expiry in blocks</dd>
+      </div>
+      <div class="meta-cell">
+        <dt>Cipher</dt>
+        <dd>XChaCha20-Poly1305</dd>
+      </div>
+      <div class="meta-cell">
+        <dt>Entity budget</dt>
+        <dd>128 KiB · 30 attrs</dd>
+      </div>
+      <div class="meta-cell">
+        <dt>Expiry by kind</dt>
+        <dd>3 · 14 · 90 · 365 d</dd>
+      </div>
+    </dl>
+  </div>
+</section>
+
+<section class="section viewer" id="viewer">
+  <div class="wrap">
+    <div class="section-head" data-reveal>
+      <div>
+        <p class="eyebrow">01 — Viewer</p>
+        <h2 class="h2">Branches, not Slack threads.</h2>
+      </div>
+      <p class="section-note">Reads Arkiv directly from this page, decrypts commit bodies in the browser, and re-checks every signature. The group key stays in memory for the tab's lifetime — it is never sent anywhere.</p>
+    </div>
+
+    <div class="connect card" data-reveal>
+      <div class="connect-fields">
+        <label class="field">
+          <span class="field-label">Repo id</span>
+          <input class="input mono" type="text" value="a7d3f9c21b84e650" spellcheck="false" autocomplete="off" />
+        </label>
+        <label class="field field-wide">
+          <span class="field-label">Group key or invite</span>
+          <input class="input mono" type="password" value="cogit1:a7d3f9c21b84e650:5Kd8wRq2xTfLm9vPcYbHgNzE4sWuJkA6dM3oQxVt" spellcheck="false" autocomplete="off" />
+          <span class="field-hint">kept in memory only</span>
+        </label>
+        <button class="btn btn-ink connect-btn" type="button">Connect</button>
+      </div>
+      <div class="connect-side">
+        <div class="seg" role="group" aria-label="Data source">
+          <button class="seg-opt is-on" type="button">Demo dataset</button>
+          <button class="seg-opt" type="button">Live · Arkiv</button>
+        </div>
+        <p class="connect-status"><span class="pulse-dot"></span> reading a seeded demo repo · auto-refresh 5 s</p>
+      </div>
+    </div>
+
+    <div class="workbench card" data-reveal>
+      <div class="wb-bar">
+        <div class="wb-crumbs">
+          <svg class="ic"><use href="#i-branch" /></svg>
+          <span class="wb-name">atlas-reports</span>
+          <span class="wb-sep">/</span>
+          <span class="wb-path mono">history</span>
+          <button class="copy-btn" type="button" data-copy="a7d3f9c21b84e650" aria-label="Copy repo id">
+            <svg class="ic"><use href="#i-copy" /></svg>
+          </button>
+          <span class="mono wb-id">a7d3f9c21b84e650</span>
+        </div>
+        <div class="wb-meta">
+          <div class="avatar-stack" aria-label="5 members">
+            <span class="avatar av-anu">AN</span>
+            <span class="avatar av-ada">AD</span>
+            <span class="avatar av-rit">RI</span>
+            <span class="avatar av-smi">SM</span>
+            <span class="avatar av-kus">KU</span>
+          </div>
+          <span class="wb-meta-txt">5 members</span>
+          <span class="wb-dot"></span>
+          <span class="wb-meta-txt">block 701 312</span>
+          <span class="wb-dot"></span>
+          <span class="wb-meta-txt"><svg class="ic ic-inline"><use href="#i-refresh" /></svg> refreshed 2 s ago</span>
+        </div>
+      </div>
+
+      <div class="wb-grid">
+
+        <aside class="rail">
+          <p class="rail-label">Branches <span class="rail-count">5</span></p>
+          <div class="rail-list">
+            <button class="rail-row is-on" type="button">
+              <span class="rail-dot rail-dot-all"></span>
+              <span class="rail-main">
+                <span class="rail-name">All branches</span>
+                <span class="rail-meta">16 commits</span>
+              </span>
+            </button>
+            <button class="rail-row" type="button">
+              <span class="rail-dot" style="--c:#57564F"></span>
+              <span class="rail-main">
+                <span class="rail-name">main</span>
+                <span class="rail-meta">5 commits · head 0x3d81…7e22</span>
+              </span>
+              <span class="rail-owner mono">anurag</span>
+            </button>
+            <button class="rail-row" type="button">
+              <span class="rail-dot" style="--c:#1F6C9F"></span>
+              <span class="rail-main">
+                <span class="rail-name">ritesh</span>
+                <span class="rail-meta">4 commits · head 0xd41b…f0c9</span>
+              </span>
+              <span class="rail-owner mono">ritesh</span>
+            </button>
+            <button class="rail-row" type="button">
+              <span class="rail-dot" style="--c:#9F2F2D"></span>
+              <span class="rail-main">
+                <span class="rail-name">adarsh</span>
+                <span class="rail-meta">3 commits · head 0x2f8c…b7e1</span>
+              </span>
+              <span class="rail-owner mono">adarsh</span>
+            </button>
+            <button class="rail-row" type="button">
+              <span class="rail-dot" style="--c:#346538"></span>
+              <span class="rail-main">
+                <span class="rail-name">smriti</span>
+                <span class="rail-meta">2 commits · head 0x9a31…44de</span>
+              </span>
+              <span class="rail-owner mono">smriti</span>
+            </button>
+            <button class="rail-row" type="button">
+              <span class="rail-dot" style="--c:#956400"></span>
+              <span class="rail-main">
+                <span class="rail-name">kushal</span>
+                <span class="rail-meta">2 commits · head 0x61d8…c203</span>
+              </span>
+              <span class="rail-owner mono">kushal</span>
+            </button>
+          </div>
+
+          <div class="rail-rule"></div>
+          <p class="rail-label">Repo</p>
+          <dl class="kv">
+            <div class="kv-row"><dt>Owner</dt><dd class="mono">anurag · 0x225f…6af7</dd></div>
+            <div class="kv-row"><dt>Created</dt><dd class="mono">09 Oct 2026</dd></div>
+            <div class="kv-row"><dt>Expires</dt><dd class="mono">in 361 d</dd></div>
+            <div class="kv-row"><dt>Entity</dt><dd class="mono">0xb2a7…7f31</dd></div>
+          </dl>
+          <p class="rail-note">Branch heads are single-writer: only the owner's wallet can advance them.</p>
+        </aside>
+
+        <div class="center">
+          <div class="center-toolbar">
+            <div class="filters" role="group" aria-label="Filter by kind">
+              <button class="chip is-on" type="button">All</button>
+              <button class="chip" type="button">scratch</button>
+              <button class="chip" type="button">note</button>
+              <button class="chip" type="button">decision</button>
+              <button class="chip" type="button">milestone</button>
+            </div>
+            <label class="search">
+              <svg class="ic"><use href="#i-search" /></svg>
+              <input type="text" placeholder="Filter commits" spellcheck="false" />
+            </label>
+          </div>
+
+          <div class="graph">
+            <svg viewBox="0 0 600 752" role="img" aria-label="Commit graph for atlas-reports across five branches" preserveAspectRatio="xMidYMin meet" class="graph-svg">
+<line x1="52" y1="691.8" x2="588" y2="691.8" class="g-tick"/>
+<text x="10" y="694.8" class="g-tick-label">10 OCT</text>
+<line x1="52" y1="615.3" x2="588" y2="615.3" class="g-tick"/>
+<text x="10" y="618.3" class="g-tick-label">11 OCT</text>
+<line x1="52" y1="538.9" x2="588" y2="538.9" class="g-tick"/>
+<text x="10" y="541.9" class="g-tick-label">12 OCT</text>
+<line x1="52" y1="462.4" x2="588" y2="462.4" class="g-tick"/>
+<text x="10" y="465.4" class="g-tick-label">13 OCT</text>
+<line x1="52" y1="386.0" x2="588" y2="386.0" class="g-tick"/>
+<text x="10" y="389.0" class="g-tick-label">14 OCT</text>
+<line x1="52" y1="309.6" x2="588" y2="309.6" class="g-tick"/>
+<text x="10" y="312.6" class="g-tick-label">15 OCT</text>
+<line x1="52" y1="233.1" x2="588" y2="233.1" class="g-tick"/>
+<text x="10" y="236.1" class="g-tick-label">16 OCT</text>
+<line x1="52" y1="156.7" x2="588" y2="156.7" class="g-tick"/>
+<text x="10" y="159.7" class="g-tick-label">17 OCT</text>
+<line x1="52" y1="80.2" x2="588" y2="80.2" class="g-tick"/>
+<text x="10" y="83.2" class="g-tick-label">18 OCT</text>
+<line x1="80" y1="124.0" x2="80" y2="740.0" class="g-lane" style="stroke:#57564F" data-branch="main"/>
+<line x1="168" y1="256.0" x2="168" y2="652.0" class="g-lane" style="stroke:#9F2F2D" data-branch="adarsh"/>
+<line x1="256" y1="36.0" x2="256" y2="520.0" class="g-lane" style="stroke:#1F6C9F" data-branch="ritesh"/>
+<line x1="344" y1="212.0" x2="344" y2="432.0" class="g-lane" style="stroke:#346538" data-branch="smriti"/>
+<line x1="432" y1="168.0" x2="432" y2="388.0" class="g-lane" style="stroke:#956400" data-branch="kushal"/>
+<path d="M 80 674 C 80 654.2, 168 649.8, 168 630" class="g-fork" style="stroke:#9F2F2D" fill="none"/>
+<path d="M 80 542 C 80 522.2, 256 517.8, 256 498" class="g-fork" style="stroke:#1F6C9F" fill="none"/>
+<path d="M 80 542 C 80 482.6, 344 469.4, 344 410" class="g-fork" style="stroke:#346538" fill="none"/>
+<path d="M 80 542 C 80 462.8, 432 445.2, 432 366" class="g-fork" style="stroke:#956400" fill="none"/>
+<circle cx="80" cy="718" r="6.5" class="g-node n-milestone" style="stroke:#57564F" data-commit="main-init" data-branch="main"><title>Repo initialized — atlas reports dashboard</title></circle><circle cx="80" cy="718" r="10.5" class="g-node n-milestone g-ring" style="stroke:#57564F"/>
+<path d="M 80 666 L 88 674 L 80 682 L 72 674 Z" class="g-node n-decision" style="stroke:#57564F" data-commit="main-mono" data-branch="main"><title>Monorepo: pnpm workspaces, TypeScript everywhere</title></path>
+<rect x="162.5" y="624.5" width="11" height="11" rx="2.5" class="g-node n-scratch" style="stroke:#9F2F2D" data-commit="adarsh-spike" data-branch="adarsh"><title>Ingest spike: batching against 2 s blocks</title></rect>
+<circle cx="168" cy="586" r="6.5" class="g-node n-note" style="stroke:#9F2F2D" data-commit="adarsh-worker" data-branch="adarsh"><title>Ingest worker: single ws subscription, idempotent writes</title></circle>
+<path d="M 80 534 L 88 542 L 80 550 L 72 542 Z" class="g-node n-decision" style="stroke:#57564F" data-commit="main-pg" data-branch="main"><title>Postgres + JSONB for the reports table; wallet-signature auth</title></path>
+<circle cx="256" cy="498" r="6.5" class="g-node n-note" style="stroke:#1F6C9F" data-commit="ritesh-plan" data-branch="ritesh"><title>Read anurag's decision — migration plan</title></circle>
+<circle cx="256" cy="454" r="6.5" class="g-node n-milestone" style="stroke:#1F6C9F" data-commit="ritesh-sql" data-branch="ritesh"><title>0001_create_reports.sql applied on staging</title></circle><circle cx="256" cy="454" r="10.5" class="g-node n-milestone g-ring" style="stroke:#1F6C9F"/>
+<path d="M 344 402 L 352 410 L 344 418 L 336 410 Z" class="g-node n-decision" style="stroke:#346538" data-commit="smriti-charts" data-branch="smriti"><title>Charts: one accent per view, no pies</title></path>
+<circle cx="432" cy="366" r="6.5" class="g-node n-note" style="stroke:#956400" data-commit="kushal-session" data-branch="kushal"><title>Session tokens: 24 h TTL, refresh via signed nonce</title></circle>
+<circle cx="80" cy="322" r="6.5" class="g-node n-note" style="stroke:#57564F" data-commit="main-sync" data-branch="main"><title>Sync: reports v0 to staging Friday</title></circle>
+<path d="M 168 270 L 176 278 L 168 286 L 160 278 Z" class="g-node n-decision" style="stroke:#9F2F2D" data-commit="adarsh-idx" data-branch="adarsh"><title>Indexes: GIN on payload, btree on report_date</title></path>
+<rect x="338.5" y="228.5" width="11" height="11" rx="2.5" class="g-node n-scratch" style="stroke:#346538" data-commit="smriti-grid" data-branch="smriti"><title>Responsive grid math for 12-col layout</title></rect>
+<path d="M 432 182 L 440 190 L 432 198 L 424 190 Z" class="g-node n-decision" style="stroke:#956400" data-commit="kushal-threat" data-branch="kushal"><title>Threat model: replay + tamper covered by commit hash</title></path>
+<circle cx="80" cy="146" r="6.5" class="g-node n-milestone" style="stroke:#57564F" data-commit="main-v0" data-branch="main"><title>v0 tagged — reports + wallet auth on staging</title></circle><circle cx="80" cy="146" r="10.5" class="g-node n-milestone g-ring" style="stroke:#57564F"/>
+<circle cx="256" cy="102" r="6.5" class="g-node n-note" style="stroke:#1F6C9F" data-commit="ritesh-perf" data-branch="ritesh"><title>Query perf: 120 ms p95 on 2 M rows (GIN payload)</title></circle>
+<circle cx="256" cy="58" r="6.5" class="g-node n-note n-invalid" style="stroke:#B4483F" data-commit="ritesh-forge" data-branch="ritesh"><title>Hotfix: skip signature verification for large pulls</title></circle>
+<text x="272" y="61" class="g-head-label">HEAD · ritesh</text>
+            </svg>
+          </div>
+
+          <div class="list">
+            <div class="list-head">
+              <span class="list-title mono">Commits</span>
+              <span class="list-count mono">16 · newest first</span>
+            </div>
+
+            <button class="crow is-invalid" type="button" data-commit="ritesh-forge">
+              <span class="crow-gutter" style="--c:#1F6C9F"><span class="crow-dot"></span></span>
+              <span class="crow-main">
+                <span class="crow-line1">
+                  <span class="tag kind-note">note</span>
+                  <span class="crow-branch mono">ritesh</span>
+                  <span class="crow-spacer"></span>
+                  <span class="crow-time mono">7 h ago</span>
+                </span>
+                <span class="crow-summary">Hotfix: skip signature verification for large pulls</span>
+                <span class="crow-line3 mono">ritesh · 0x8b3c…41d9 <span class="crow-agent">via cursor</span></span>
+              </span>
+              <span class="crow-badge"><span class="badge badge-invalid">invalid · owner mismatch</span></span>
+            </button>
+
+            <button class="crow" type="button" data-commit="ritesh-perf">
+              <span class="crow-gutter" style="--c:#1F6C9F"><span class="crow-dot"></span></span>
+              <span class="crow-main">
+                <span class="crow-line1">
+                  <span class="tag kind-note">note</span>
+                  <span class="crow-branch mono">ritesh</span>
+                  <span class="crow-spacer"></span>
+                  <span class="crow-time mono">14 h ago</span>
+                </span>
+                <span class="crow-summary">Query perf: 120 ms p95 on 2 M rows (GIN payload)</span>
+                <span class="crow-line3 mono">ritesh · 0x8b3c…41d9 <span class="crow-agent">via opencode</span></span>
+              </span>
+              <span class="crow-badge"><span class="badge badge-verified"><svg class="ic ic-check"><use href="#i-check" /></svg>verified</span></span>
+            </button>
+
+            <button class="crow" type="button" data-commit="main-v0">
+              <span class="crow-gutter" style="--c:#57564F"><span class="crow-dot"></span></span>
+              <span class="crow-main">
+                <span class="crow-line1">
+                  <span class="tag kind-milestone">milestone</span>
+                  <span class="crow-branch mono">main</span>
+                  <span class="crow-spacer"></span>
+                  <span class="crow-time mono">1 d ago</span>
+                </span>
+                <span class="crow-summary">v0 tagged — reports + wallet auth on staging</span>
+                <span class="crow-line3 mono">anurag · 0x225f…6af7 <span class="crow-agent">via human</span></span>
+              </span>
+              <span class="crow-badge"><span class="badge badge-verified"><svg class="ic ic-check"><use href="#i-check" /></svg>verified</span></span>
+            </button>
+
+            <button class="crow" type="button" data-commit="kushal-threat">
+              <span class="crow-gutter" style="--c:#956400"><span class="crow-dot"></span></span>
+              <span class="crow-main">
+                <span class="crow-line1">
+                  <span class="tag kind-decision">decision</span>
+                  <span class="crow-branch mono">kushal</span>
+                  <span class="crow-spacer"></span>
+                  <span class="crow-time mono">2 d ago</span>
+                </span>
+                <span class="crow-summary">Threat model: replay + tamper covered by commit hash</span>
+                <span class="crow-line3 mono">kushal · 0x71f9…2a6d <span class="crow-agent">via cursor</span></span>
+              </span>
+              <span class="crow-badge"><span class="badge badge-verified"><svg class="ic ic-check"><use href="#i-check" /></svg>verified</span></span>
+            </button>
+
+            <button class="crow" type="button" data-commit="smriti-grid">
+              <span class="crow-gutter" style="--c:#346538"><span class="crow-dot"></span></span>
+              <span class="crow-main">
+                <span class="crow-line1">
+                  <span class="tag kind-scratch">scratch</span>
+                  <span class="crow-branch mono">smriti</span>
+                  <span class="crow-spacer"></span>
+                  <span class="crow-time mono">2 d ago</span>
+                </span>
+                <span class="crow-summary">Responsive grid math for 12-col layout</span>
+                <span class="crow-line3 mono">smriti · 0xc7a2…b3e8 <span class="crow-agent">via claude-code</span></span>
+              </span>
+              <span class="crow-badge"><span class="badge badge-verified"><svg class="ic ic-check"><use href="#i-check" /></svg>verified</span></span>
+            </button>
+
+            <button class="crow" type="button" data-commit="adarsh-idx">
+              <span class="crow-gutter" style="--c:#9F2F2D"><span class="crow-dot"></span></span>
+              <span class="crow-main">
+                <span class="crow-line1">
+                  <span class="tag kind-decision">decision</span>
+                  <span class="crow-branch mono">adarsh</span>
+                  <span class="crow-spacer"></span>
+                  <span class="crow-time mono">3 d ago</span>
+                </span>
+                <span class="crow-summary">Indexes: GIN on payload, btree on report_date</span>
+                <span class="crow-line3 mono">adarsh · 0x5d1e…9f04 <span class="crow-agent">via cursor</span></span>
+              </span>
+              <span class="crow-badge"><span class="badge badge-verified"><svg class="ic ic-check"><use href="#i-check" /></svg>verified</span></span>
+            </button>
+
+            <button class="crow" type="button" data-commit="main-sync">
+              <span class="crow-gutter" style="--c:#57564F"><span class="crow-dot"></span></span>
+              <span class="crow-main">
+                <span class="crow-line1">
+                  <span class="tag kind-note">note</span>
+                  <span class="crow-branch mono">main</span>
+                  <span class="crow-spacer"></span>
+                  <span class="crow-time mono">3 d ago</span>
+                </span>
+                <span class="crow-summary">Sync: reports v0 to staging Friday</span>
+                <span class="crow-line3 mono">anurag · 0x225f…6af7 <span class="crow-agent">via human</span></span>
+              </span>
+              <span class="crow-badge"><span class="badge badge-verified"><svg class="ic ic-check"><use href="#i-check" /></svg>verified</span></span>
+            </button>
+
+            <button class="crow" type="button" data-commit="kushal-session">
+              <span class="crow-gutter" style="--c:#956400"><span class="crow-dot"></span></span>
+              <span class="crow-main">
+                <span class="crow-line1">
+                  <span class="tag kind-note">note</span>
+                  <span class="crow-branch mono">kushal</span>
+                  <span class="crow-spacer"></span>
+                  <span class="crow-time mono">4 d ago</span>
+                </span>
+                <span class="crow-summary">Session tokens: 24 h TTL, refresh via signed nonce</span>
+                <span class="crow-line3 mono">kushal · 0x71f9…2a6d <span class="crow-agent">via cursor</span></span>
+              </span>
+              <span class="crow-badge"><span class="badge badge-verified"><svg class="ic ic-check"><use href="#i-check" /></svg>verified</span></span>
+            </button>
+
+            <button class="crow" type="button" data-commit="smriti-charts">
+              <span class="crow-gutter" style="--c:#346538"><span class="crow-dot"></span></span>
+              <span class="crow-main">
+                <span class="crow-line1">
+                  <span class="tag kind-decision">decision</span>
+                  <span class="crow-branch mono">smriti</span>
+                  <span class="crow-spacer"></span>
+                  <span class="crow-time mono">5 d ago</span>
+                </span>
+                <span class="crow-summary">Charts: one accent per view, no pies</span>
+                <span class="crow-line3 mono">smriti · 0xc7a2…b3e8 <span class="crow-agent">via claude-code</span></span>
+              </span>
+              <span class="crow-badge"><span class="badge badge-verified"><svg class="ic ic-check"><use href="#i-check" /></svg>verified</span></span>
+            </button>
+
+            <button class="crow" type="button" data-commit="ritesh-sql">
+              <span class="crow-gutter" style="--c:#1F6C9F"><span class="crow-dot"></span></span>
+              <span class="crow-main">
+                <span class="crow-line1">
+                  <span class="tag kind-milestone">milestone</span>
+                  <span class="crow-branch mono">ritesh</span>
+                  <span class="crow-spacer"></span>
+                  <span class="crow-time mono">5 d ago</span>
+                </span>
+                <span class="crow-summary">0001_create_reports.sql applied on staging</span>
+                <span class="crow-line3 mono">ritesh · 0x8b3c…41d9 <span class="crow-agent">via opencode</span></span>
+              </span>
+              <span class="crow-badge"><span class="badge badge-verified"><svg class="ic ic-check"><use href="#i-check" /></svg>verified</span></span>
+            </button>
+
+            <button class="crow" type="button" data-commit="ritesh-plan">
+              <span class="crow-gutter" style="--c:#1F6C9F"><span class="crow-dot"></span></span>
+              <span class="crow-main">
+                <span class="crow-line1">
+                  <span class="tag kind-note">note</span>
+                  <span class="crow-branch mono">ritesh</span>
+                  <span class="crow-spacer"></span>
+                  <span class="crow-time mono">6 d ago</span>
+                </span>
+                <span class="crow-summary">Read anurag's decision — migration plan</span>
+                <span class="crow-line3 mono">ritesh · 0x8b3c…41d9 <span class="crow-agent">via opencode</span></span>
+              </span>
+              <span class="crow-badge"><span class="badge badge-verified"><svg class="ic ic-check"><use href="#i-check" /></svg>verified</span></span>
+            </button>
+
+            <button class="crow is-on" type="button" data-commit="main-pg">
+              <span class="crow-gutter" style="--c:#57564F"><span class="crow-dot"></span></span>
+              <span class="crow-main">
+                <span class="crow-line1">
+                  <span class="tag kind-decision">decision</span>
+                  <span class="crow-branch mono">main</span>
+                  <span class="crow-spacer"></span>
+                  <span class="crow-time mono">6 d ago</span>
+                </span>
+                <span class="crow-summary">Postgres + JSONB for the reports table; wallet-signature auth</span>
+                <span class="crow-line3 mono">anurag · 0x225f…6af7 <span class="crow-agent">via claude-code</span></span>
+              </span>
+              <span class="crow-badge"><span class="badge badge-verified"><svg class="ic ic-check"><use href="#i-check" /></svg>verified</span></span>
+            </button>
+
+            <button class="crow" type="button" data-commit="adarsh-worker">
+              <span class="crow-gutter" style="--c:#9F2F2D"><span class="crow-dot"></span></span>
+              <span class="crow-main">
+                <span class="crow-line1">
+                  <span class="tag kind-note">note</span>
+                  <span class="crow-branch mono">adarsh</span>
+                  <span class="crow-spacer"></span>
+                  <span class="crow-time mono">7 d ago</span>
+                </span>
+                <span class="crow-summary">Ingest worker: single ws subscription, idempotent writes</span>
+                <span class="crow-line3 mono">adarsh · 0x5d1e…9f04 <span class="crow-agent">via cursor</span></span>
+              </span>
+              <span class="crow-badge"><span class="badge badge-verified"><svg class="ic ic-check"><use href="#i-check" /></svg>verified</span></span>
+            </button>
+
+            <button class="crow" type="button" data-commit="adarsh-spike">
+              <span class="crow-gutter" style="--c:#9F2F2D"><span class="crow-dot"></span></span>
+              <span class="crow-main">
+                <span class="crow-line1">
+                  <span class="tag kind-scratch">scratch</span>
+                  <span class="crow-branch mono">adarsh</span>
+                  <span class="crow-spacer"></span>
+                  <span class="crow-time mono">7 d ago</span>
+                </span>
+                <span class="crow-summary">Ingest spike: batching against 2 s blocks</span>
+                <span class="crow-line3 mono">adarsh · 0x5d1e…9f04 <span class="crow-agent">via cursor</span></span>
+              </span>
+              <span class="crow-badge"><span class="badge badge-verified"><svg class="ic ic-check"><use href="#i-check" /></svg>verified</span></span>
+            </button>
+
+            <button class="crow" type="button" data-commit="main-mono">
+              <span class="crow-gutter" style="--c:#57564F"><span class="crow-dot"></span></span>
+              <span class="crow-main">
+                <span class="crow-line1">
+                  <span class="tag kind-decision">decision</span>
+                  <span class="crow-branch mono">main</span>
+                  <span class="crow-spacer"></span>
+                  <span class="crow-time mono">8 d ago</span>
+                </span>
+                <span class="crow-summary">Monorepo: pnpm workspaces, TypeScript everywhere</span>
+                <span class="crow-line3 mono">anurag · 0x225f…6af7 <span class="crow-agent">via claude-code</span></span>
+              </span>
+              <span class="crow-badge"><span class="badge badge-verified"><svg class="ic ic-check"><use href="#i-check" /></svg>verified</span></span>
+            </button>
+
+            <button class="crow" type="button" data-commit="main-init">
+              <span class="crow-gutter" style="--c:#57564F"><span class="crow-dot"></span></span>
+              <span class="crow-main">
+                <span class="crow-line1">
+                  <span class="tag kind-milestone">milestone</span>
+                  <span class="crow-branch mono">main</span>
+                  <span class="crow-spacer"></span>
+                  <span class="crow-time mono">9 d ago</span>
+                </span>
+                <span class="crow-summary">Repo initialized — atlas reports dashboard</span>
+                <span class="crow-line3 mono">anurag · 0x225f…6af7 <span class="crow-agent">via human</span></span>
+              </span>
+              <span class="crow-badge"><span class="badge badge-verified"><svg class="ic ic-check"><use href="#i-check" /></svg>verified</span></span>
+            </button>
+          </div>
+        </div>
+
+        <aside class="detail">
+          <div class="detail-head">
+            <span class="badge badge-verified"><svg class="ic ic-check"><use href="#i-check" /></svg>verified</span>
+            <span class="detail-checks mono">hash ✓ · sig ✓ · owner ✓ · member ✓</span>
+          </div>
+
+          <div class="detail-title-row">
+            <span class="tag kind-decision">decision</span>
+            <span class="detail-branch mono">main · anurag</span>
+          </div>
+          <h3 class="detail-title">Postgres + JSONB for the reports table; wallet-signature auth</h3>
+          <p class="detail-time mono">11 Oct 2026 · 21:36 UTC <span class="detail-dot"></span> 6 d ago</p>
+
+          <dl class="kv kv-detail">
+            <div class="kv-row"><dt>Author</dt><dd class="mono">anurag · 0x225f…6af7</dd></div>
+            <div class="kv-row"><dt>Agent</dt><dd class="mono">claude-code</dd></div>
+            <div class="kv-row"><dt>Block</dt><dd class="mono">701 118</dd></div>
+            <div class="kv-row"><dt>Expires</dt><dd class="mono"><svg class="ic ic-inline"><use href="#i-clock" /></svg>in 83 d · 09 Jan 2027</dd></div>
+          </dl>
+
+          <div class="detail-tags">
+            <span class="chip chip-sm">db</span>
+            <span class="chip chip-sm">auth</span>
+          </div>
+
+          <div class="proof">
+            <p class="proof-label">Proof</p>
+            <div class="proof-row">
+              <span class="proof-key">commit hash</span>
+              <span class="proof-val mono">0x7c9e1f3a…f5b8a4d2</span>
+              <button class="copy-btn" type="button" data-copy="0x7c9e1f3ab2d84b06c5e2a91d0f4c8b7e63a5d2c9f10b4e87a6d3c2901f5b8a4d2" aria-label="Copy commit hash"><svg class="ic"><use href="#i-copy" /></svg></button>
+            </div>
+            <div class="proof-row">
+              <span class="proof-key">parent</span>
+              <span class="proof-val mono">0x1b44d7e0…9c03f9e8</span>
+              <button class="copy-btn" type="button" data-copy="0x1b44d7e0c93a5f82b6714de09c3f8a25d6b04e71c9f3a852d0e647b19c03f9e8" aria-label="Copy parent hash"><svg class="ic"><use href="#i-copy" /></svg></button>
+            </div>
+            <div class="proof-row">
+              <span class="proof-key">entity key</span>
+              <span class="proof-val mono">0xb2a7c3d9…204a6f4ce0</span>
+              <button class="copy-btn" type="button" data-copy="0xb2a7c3d9e1f45a08726b4c8d0e3f9a1b5c7d2e4068f9a3b1c5d7e9204a6f4ce0" aria-label="Copy entity key"><svg class="ic"><use href="#i-copy" /></svg></button>
+            </div>
+            <div class="proof-row">
+              <span class="proof-key">signature</span>
+              <span class="proof-val mono">0x4b7af2…0c9e10</span>
+              <button class="copy-btn" type="button" data-copy="0x4b7af2c8d91e5a07b4f6d2c8e1a95f3b7d0c6e29a4f81b3d5c7e9206f4a1d8c0c9e10" aria-label="Copy signature"><svg class="ic"><use href="#i-copy" /></svg></button>
+            </div>
+          </div>
+
+          <div class="detail-body">
+            <p class="proof-label">Details</p>
+            <div class="md">
+              <h4>Decision</h4>
+              <p>One Postgres table for reports; flexible payloads live in a <code>jsonb</code> column. Authentication is wallet-signature based — no passwords, reusing the same keys as Arkiv.</p>
+              <pre><code>create table reports (
+  id          bigserial primary key,
+  org_id      uuid not null,
+  payload     jsonb not null,
+  report_date date not null,
+  created_by  text not null,      -- wallet address
+  created_at  timestamptz not null default now()
+);</code></pre>
+              <h4>Why</h4>
+              <ul>
+                <li>Report shapes change weekly; one table keeps migrations small.</li>
+                <li><code>jsonb</code> with a GIN index measured 120 ms p95 on 2 M rows.</li>
+                <li>Wallet signatures reuse the Arkiv identity — one key for chain and app.</li>
+              </ul>
+              <h4>Auth flow</h4>
+              <ol>
+                <li>Server issues a single-use nonce.</li>
+                <li>Client signs <code>"atlas-login:&lt;nonce&gt;"</code> with its wallet.</li>
+                <li>Server recovers the address and replies with a signed token.</li>
+              </ol>
+            </div>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+
+    <p class="viewer-foot mono" data-reveal>new commit appears ≤ 5 s after the write · invalid entries render red with the reason and are never decrypted</p>
+  </div>
+</section>
+
+<section class="section pipeline" id="pipeline">
+  <div class="wrap">
+    <div class="section-head" data-reveal>
+      <div>
+        <p class="eyebrow">02 — Pipeline</p>
+        <h2 class="h2">How a commit moves.</h2>
+      </div>
+      <p class="section-note">Five steps from a one-line note to an entity any member can pull — the same code path runs in the CLI, the MCP server, and this page.</p>
+    </div>
+
+    <div class="pipe-grid">
+      <ol class="pipe-steps" data-reveal>
+        <li class="pipe-step">
+          <span class="pipe-idx mono">01</span>
+          <div>
+            <h3 class="pipe-title">Build</h3>
+            <p class="pipe-body">The body <span class="mono">{summary, details, tags}</span> is wrapped in a versioned envelope with the branch, parent hash, author, kind, and timestamp.</p>
+            <span class="pipe-chip mono">envelope v1 · kind decision · agent claude-code</span>
+          </div>
+        </li>
+        <li class="pipe-step">
+          <span class="pipe-idx mono">02</span>
+          <div>
+            <h3 class="pipe-title">Encrypt</h3>
+            <p class="pipe-body">The body is sealed with XChaCha20-Poly1305 using the repo's 32-byte group key and a fresh 24-byte nonce. Only key holders can read it.</p>
+            <span class="pipe-chip mono">xchacha20-poly1305 · repo group key</span>
+          </div>
+        </li>
+        <li class="pipe-step">
+          <span class="pipe-idx mono">03</span>
+          <div>
+            <h3 class="pipe-title">Hash</h3>
+            <p class="pipe-body">sha256 over the canonical JSON of the hash fields — sorted keys, no whitespace. Change one byte of ciphertext and the hash moves.</p>
+            <span class="pipe-chip mono">sha256(canonicalJson(payload))</span>
+          </div>
+        </li>
+        <li class="pipe-step">
+          <span class="pipe-idx mono">04</span>
+          <div>
+            <h3 class="pipe-title">Sign</h3>
+            <p class="pipe-body">The wallet signs the commit hash with <span class="mono">signMessage</span>. The signature travels inside the envelope; anyone can recover the signer.</p>
+            <span class="pipe-chip mono">sig = signMessage(commitHash)</span>
+          </div>
+        </li>
+        <li class="pipe-step">
+          <span class="pipe-idx mono">05</span>
+          <div>
+            <h3 class="pipe-title">Write</h3>
+            <p class="pipe-body">One Arkiv entity — payload plus public attributes — with an expiry set by kind. The branch head is patched to the new hash in the same breath.</p>
+            <span class="pipe-chip mono">entity + attrs · patch branch head</span>
+          </div>
+        </li>
+      </ol>
+
+      <div class="pipe-side">
+        <div class="verify-card card" data-reveal>
+          <p class="raillabel-ish eyebrow">Verification, in order</p>
+          <ul class="verify-list">
+            <li>
+              <span class="gate mono">BAD_HASH</span>
+              <span class="gate-body">recomputed hash ≠ envelope hash</span>
+            </li>
+            <li>
+              <span class="gate mono">BAD_SIGNATURE</span>
+              <span class="gate-body">recovered address ≠ envelope author</span>
+            </li>
+            <li>
+              <span class="gate mono">OWNER_MISMATCH</span>
+              <span class="gate-body">entity owner ≠ author — someone else's key wrote it</span>
+            </li>
+            <li>
+              <span class="gate mono">NOT_MEMBER</span>
+              <span class="gate-body">author not in the repo member list</span>
+            </li>
+          </ul>
+          <div class="verify-out">
+            <div class="verify-out-row ok"><svg class="ic"><use href="#i-check" /></svg> passes all four → decrypt, show, hand to agents</div>
+            <div class="verify-out-row bad"><span class="x-mark mono">×</span> fails any → red badge, reason shown, never decrypted</div>
+          </div>
+        </div>
+
+        <div class="term" data-reveal>
+          <div class="term-bar">
+            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            <span class="term-title">verify — 4 checks</span>
+          </div>
+          <div class="term-body term-light">
+            <p><span class="t-ok">✓</span> hash     0x7c9e1f…a4d2 <span class="t-dim">matches recomputation</span></p>
+            <p><span class="t-ok">✓</span> signature recovers 0x225f…6af7 <span class="t-dim">= author</span></p>
+            <p><span class="t-ok">✓</span> owner     0x225f…6af7 <span class="t-dim">= author</span></p>
+            <p><span class="t-ok">✓</span> member    anurag ∈ [anurag, adarsh, ritesh, smriti, kushal]</p>
+            <p class="t-gap"><span class="t-warn">×</span> revoked?  commit 0xd41b…f0c9 fails owner check <span class="t-dim">— shown red, not decrypted</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section features" id="features">
+  <div class="wrap">
+    <div class="section-head" data-reveal>
+      <div>
+        <p class="eyebrow">03 — Features</p>
+        <h2 class="h2">Three features, nothing else.</h2>
+      </div>
+      <p class="section-note">The whole build is scoped to upload, pull, and show — so the demo stays honest and the tool stays small.</p>
+    </div>
+
+    <div class="bento">
+      <article class="fcard card span-7 tall" data-reveal>
+        <div class="fcard-head">
+          <span class="fcard-tag mono">F1 · commit</span>
+          <svg class="ic fcard-ic"><use href="#i-lock" /></svg>
+        </div>
+        <h3 class="fcard-title display-sm">Commit context from anywhere.</h3>
+        <p class="fcard-body">One command seals the body, signs the hash, and writes the entity. Expiry is chosen by kind, so scratch pads fade and milestones stay a year.</p>
+        <div class="term term-tight">
+          <div class="term-body term-light">
+            <p><span class="t-prompt">$</span> cogit commit -m <span class="t-str">"Reports: Postgres + JSONB"</span> --kind decision</p>
+            <p><span class="t-dim">→</span> entity 0xb2a7…4ce0 · <span class="t-warn">expires in 90 d</span></p>
+          </div>
+        </div>
+        <table class="kind-table">
+          <thead>
+            <tr><th>Kind</th><th>Covers</th><th class="ta-r">Expiry</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><span class="tag kind-scratch">scratch</span></td><td>throwaway notes and spikes</td><td class="mono ta-r">3 d</td></tr>
+            <tr><td><span class="tag kind-note">note</span></td><td>working notes teammates may need</td><td class="mono ta-r">14 d</td></tr>
+            <tr><td><span class="tag kind-decision">decision</span></td><td>choices that bind future work</td><td class="mono ta-r">90 d</td></tr>
+            <tr><td><span class="tag kind-milestone">milestone</span></td><td>shipped checkpoints</td><td class="mono ta-r">365 d</td></tr>
+          </tbody>
+        </table>
+      </article>
+
+      <article class="fcard card span-5" data-reveal>
+        <div class="fcard-head">
+          <span class="fcard-tag mono">F2 · pull</span>
+          <svg class="ic fcard-ic"><use href="#i-branch" /></svg>
+        </div>
+        <h3 class="fcard-title display-sm">Teammates pull it verified.</h3>
+        <p class="fcard-body">Pull renders a branch's history as markdown, oldest first — invalid entries are counted and skipped, never handed on.</p>
+        <div class="term term-tight">
+          <div class="term-body term-light">
+            <p><span class="t-prompt">$</span> cogit pull adarsh</p>
+            <p><span class="t-ok">3 commits · 3 verified · 0 invalid</span> → .cogit/context/adarsh.md</p>
+          </div>
+        </div>
+        <p class="fcard-note">Agents do the same over MCP: <span class="mono">context_pull(branch)</span> before starting work.</p>
+      </article>
+
+      <article class="fcard card span-5" data-reveal>
+        <div class="fcard-head">
+          <span class="fcard-tag mono">F3 · view</span>
+          <svg class="ic fcard-ic"><use href="#i-node" /></svg>
+        </div>
+        <h3 class="fcard-title display-sm">The whole history, one page.</h3>
+        <p class="fcard-body">Rail of branches, graph in time order, commit list, and a proof panel per commit. The group key never leaves the tab.</p>
+        <svg class="mini-graph" viewBox="0 0 240 120" aria-hidden="true">
+          <line x1="36" y1="12" x2="36" y2="108" class="g-lane" style="stroke:#57564F"/>
+          <line x1="96" y1="34" x2="96" y2="86" class="g-lane" style="stroke:#1F6C9F"/>
+          <line x1="156" y1="24" x2="156" y2="66" class="g-lane" style="stroke:#9F2F2D"/>
+          <path d="M 36 92 C 36 74, 96 68, 96 52" class="g-fork" style="stroke:#1F6C9F" fill="none"/>
+          <path d="M 36 72 C 36 56, 156 52, 156 40" class="g-fork" style="stroke:#9F2F2D" fill="none"/>
+          <circle cx="36" cy="96" r="6" class="g-node n-note" style="stroke:#57564F"/>
+          <path d="M 36 68 L 43 75 L 36 82 L 29 75 Z" class="g-node n-decision" style="stroke:#57564F"/>
+          <circle cx="36" cy="20" r="6" class="g-node n-milestone" style="stroke:#57564F"/>
+          <circle cx="96" cy="44" r="6" class="g-node n-note" style="stroke:#1F6C9F"/>
+          <circle cx="96" cy="80" r="6" class="g-node n-note" style="stroke:#1F6C9F"/>
+          <path d="M 156 32 L 163 39 L 156 46 L 149 39 Z" class="g-node n-decision" style="stroke:#9F2F2D"/>
+          <rect x="210.5" y="54.5" width="11" height="11" rx="2.5" class="g-node n-scratch" style="stroke:#956400"/>
+          <line x1="156" y1="60" x2="204" y2="60" class="g-fork" style="stroke:#956400" fill="none"/>
+          <circle cx="216" cy="60" r="0" fill="none"/>
+        </svg>
+        <p class="fcard-note">Re-verifies every envelope client-side each refresh cycle.</p>
+      </article>
+
+      <article class="fcard card span-7" data-reveal>
+        <div class="fcard-head">
+          <span class="fcard-tag mono">Why Arkiv</span>
+          <svg class="ic fcard-ic"><use href="#i-shield" /></svg>
+        </div>
+        <h3 class="fcard-title display-sm">A ledger, not a database you have to trust.</h3>
+        <ul class="why-list">
+          <li>
+            <span class="why-key mono">expiry</span>
+            <span>Entities carry an on-chain expiry in blocks. Context decay is enforced by the network, not a cron job.</span>
+          </li>
+          <li>
+            <span class="why-key mono">queries</span>
+            <span>Attributes are public and queryable — find a repo's commits by <span class="mono">type, repo_id, branch, kind</span> without an indexer.</span>
+          </li>
+          <li>
+            <span class="why-key mono">ownership</span>
+            <span>An entity's owner is its writer's wallet. Authorship is a protocol fact, checked in the verify chain.</span>
+          </li>
+          <li>
+            <span class="why-key mono">branch heads</span>
+            <span>Heads are patched attributes. Single-writer by construction: only the owner's wallet can advance them.</span>
+          </li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section agents" id="agents">
+  <div class="wrap">
+    <div class="section-head" data-reveal>
+      <div>
+        <p class="eyebrow">04 — Agents</p>
+        <h2 class="h2">Give your agent the tool.</h2>
+      </div>
+      <p class="section-note">The MCP server exposes three tools over stdio. Tool descriptions tell the agent when to use them — commit after decisions, pull before dependent work.</p>
+    </div>
+
+    <div class="agents-grid">
+      <div class="agents-left" data-reveal>
+        <table class="tool-table">
+          <thead>
+            <tr><th>Tool</th><th>When the agent calls it</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="mono">context_commit</td>
+              <td>right after making a decision, to the agent's own branch</td>
+            </tr>
+            <tr>
+              <td class="mono">context_pull</td>
+              <td>before work that a teammate may have specified</td>
+            </tr>
+            <tr>
+              <td class="mono">context_log</td>
+              <td>to scan recent verified commits and pick what matters</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="snippet card">
+          <div class="snippet-head">
+            <span class="mono">CLAUDE.md / AGENTS.md</span>
+            <button class="copy-btn" type="button" data-copy="## Cogit — team context memory
+This project uses Cogit (MCP server `cogit`) as shared team memory on Arkiv.
+- After every decision, call context_commit (kind &quot;decision&quot; for real decisions).
+- Before starting work that a teammate may have specified or decided on,
+  call context_pull for their branch and follow it.
+- Never rely on unverified context." aria-label="Copy snippet"><svg class="ic"><use href="#i-copy" /></svg></button>
+          </div>
+          <pre><code>## Cogit — team context memory
+This project uses Cogit (MCP server `cogit`) as shared team memory on Arkiv.
+- After every decision, call context_commit (kind "decision" for real decisions).
+- Before starting work that a teammate may have specified or decided on,
+  call context_pull for their branch and follow it.
+- Never rely on unverified context.</code></pre>
+        </div>
+      </div>
+
+      <div class="agent-run card" data-reveal>
+        <p class="proof-label">One real session, replayed</p>
+        <div class="run">
+          <div class="run-row">
+            <span class="run-who mono">you</span>
+            <div class="run-msg">write the DB schema for the reports page</div>
+          </div>
+          <div class="run-row">
+            <span class="run-who mono">agent</span>
+            <div class="run-msg run-call">context_log <span class="run-dim">{ }</span></div>
+          </div>
+          <div class="run-row">
+            <span class="run-who mono">cogit</span>
+            <div class="run-msg run-dim">12 commits · 5 branches · 1 invalid skipped</div>
+          </div>
+          <div class="run-row">
+            <span class="run-who mono">agent</span>
+            <div class="run-msg run-call">context_pull <span class="run-dim">{ "branch": "anurag" }</span></div>
+          </div>
+          <div class="run-row">
+            <span class="run-who mono">cogit</span>
+            <div class="run-msg run-ok"><svg class="ic ic-check"><use href="#i-check" /></svg>6 commits · every signature verified</div>
+          </div>
+          <div class="run-row">
+            <span class="run-who mono">cogit</span>
+            <div class="run-msg run-dim">decision · Postgres + JSONB for the reports table; wallet-signature auth</div>
+          </div>
+          <div class="run-row">
+            <span class="run-who mono">agent</span>
+            <div class="run-msg">wrote <span class="mono">db/migrations/0001_create_reports.sql</span> — matching the decision, no hints needed</div>
+          </div>
+        </div>
+        <p class="agent-run-foot mono">verified end-to-end with two real agents on tiramisu</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section cli" id="cli">
+  <div class="wrap">
+    <div class="section-head" data-reveal>
+      <div>
+        <p class="eyebrow">05 — CLI</p>
+        <h2 class="h2">The whole CLI.</h2>
+      </div>
+      <p class="section-note">Eight commands, one per concept: repo, member, branch, commit, pull, log. Node 22+, no runtime dependencies.</p>
+    </div>
+
+    <div class="cli-grid">
+      <div class="cli-table" data-reveal>
+        <div class="cli-row">
+          <code class="cli-cmd">cogit init &lt;name&gt;</code>
+          <span class="cli-desc">create a repo and <span class="mono">main</span>, write <span class="mono">.cogit/config.json</span></span>
+        </div>
+        <div class="cli-row">
+          <code class="cli-cmd">cogit invite &lt;addr&gt;</code>
+          <span class="cli-desc">add a member, print a <span class="mono">cogit1:</span> invite carrying the group key</span>
+        </div>
+        <div class="cli-row">
+          <code class="cli-cmd">cogit join &lt;invite&gt;</code>
+          <span class="cli-desc">save the invite to config, mode 600</span>
+        </div>
+        <div class="cli-row">
+          <code class="cli-cmd">cogit branch &lt;name&gt;</code>
+          <span class="cli-desc">fork from the current head — every writer gets a branch</span>
+        </div>
+        <div class="cli-row">
+          <code class="cli-cmd">cogit use &lt;branch&gt;</code>
+          <span class="cli-desc">switch the current branch</span>
+        </div>
+        <div class="cli-row">
+          <code class="cli-cmd">cogit commit -m "…"</code>
+          <span class="cli-desc">encrypt, sign, write the entity, advance the head <span class="kbd-row"><kbd>--kind</kbd><kbd>--tag</kbd><kbd>--details-file</kbd></span></span>
+        </div>
+        <div class="cli-row">
+          <code class="cli-cmd">cogit pull &lt;branch&gt;</code>
+          <span class="cli-desc">verified markdown, oldest first → stdout and <span class="mono">.cogit/context/</span></span>
+        </div>
+        <div class="cli-row">
+          <code class="cli-cmd">cogit log</code>
+          <span class="cli-desc">commits with verified / invalid status <kbd>--branch</kbd></span>
+        </div>
+      </div>
+
+      <div class="term cli-term" data-reveal>
+        <div class="term-bar">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="term-title">two shells, one repo</span>
+        </div>
+        <div class="term-body">
+          <p class="t-shell">shell A · anurag</p>
+          <p><span class="t-prompt">$</span> <span class="t-cmd">cogit commit -m <span class="t-str">"Postgres + JSONB for reports"</span> --kind decision</span></p>
+          <p><span class="t-ok">→ committed 0x7c9e…a4d2 on main</span> <span class="t-dim">· expires in 90 d</span></p>
+          <p class="t-gap t-shell">shell B · ritesh — different machine, different wallet</p>
+          <p><span class="t-prompt">$</span> <span class="t-cmd">cogit pull main</span></p>
+          <p><span class="t-ok">6 commits · 6 verified · 0 invalid</span> <span class="t-dim">→ .cogit/context/main.md</span></p>
+          <p class="t-gap"><span class="t-key">##</span> 2026-10-11T21:36Z · <span class="t-str">decision</span> · anurag</p>
+          <p class="t-key">Postgres + JSONB for the reports table; wallet-signature auth.</p>
+          <p class="t-dim">single reports table, jsonb payload, auth via signed nonce…</p>
+          <p class="t-cursor-line"><span class="cursor"></span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section faq" id="faq">
+  <div class="wrap wrap-narrow">
+    <div class="section-head section-head-stack" data-reveal>
+      <p class="eyebrow">06 — Questions</p>
+      <h2 class="h2">Asked often, answered plainly.</h2>
+    </div>
+
+    <div class="faq-list" data-reveal>
+      <details class="faq-item">
+        <summary>
+          <span>Who can read a commit?</span>
+          <span class="fx" aria-hidden="true"></span>
+        </summary>
+        <p>Anyone can <em>find</em> the entity — its attributes (repo, branch, kind, author, timestamp) are public on Arkiv. The body is XChaCha20-Poly1305 ciphertext; only holders of the repo group key can read it. Managers share the key with <span class="mono">cogit invite</span> / <span class="mono">cogit join</span>.</p>
+      </details>
+      <details class="faq-item">
+        <summary>
+          <span>Can a teammate rewrite my branch?</span>
+          <span class="fx" aria-hidden="true"></span>
+        </summary>
+        <p>No. A branch head is a patched entity attribute, and Arkiv only accepts patches signed by the entity's owner. A forged commit shows up as <span class="mono">OWNER_MISMATCH</span> — red in the viewer, skipped by pull.</p>
+      </details>
+      <details class="faq-item">
+        <summary>
+          <span>Why do commits expire?</span>
+          <span class="fx" aria-hidden="true"></span>
+        </summary>
+        <p>Agent context loses value fast. Scratch notes last 3 days, notes 14, decisions 90, milestones a year — expiry is set per kind at write time and enforced by the network. Active branches extend their head's expiry on every update.</p>
+      </details>
+      <details class="faq-item">
+        <summary>
+          <span>Where does the group key live?</span>
+          <span class="fx" aria-hidden="true"></span>
+        </summary>
+        <p>On disk it sits in <span class="mono">.cogit/config.json</span> (mode 600), delivered once via an invite string. In this viewer it lives in memory for the lifetime of the tab and is never sent to a server — decryption happens in your browser.</p>
+      </details>
+      <details class="faq-item">
+        <summary>
+          <span>What exactly does the green badge prove?</span>
+          <span class="fx" aria-hidden="true"></span>
+        </summary>
+        <p>Four checks, in order: the hash recomputes, the signature recovers the stated author, the Arkiv entity owner equals that author, and the author is in the repo's member list. All four pass before you or your agent ever see plaintext.</p>
+      </details>
+      <details class="faq-item">
+        <summary>
+          <span>Is there a server in the loop?</span>
+          <span class="fx" aria-hidden="true"></span>
+        </summary>
+        <p>None. The CLI and the MCP server talk to the Arkiv RPC; this page reads the same RPC from your browser. There is no cogit backend to deploy, and no telemetry.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div class="wrap footer-grid">
+    <div class="footer-brand">
+      <a class="brand" href="#top">
+        <svg class="ic brand-mark"><use href="#i-mark" /></svg>
+        <span class="brand-word">cogit</span>
+      </a>
+      <p class="footer-line">Encrypted, wallet-signed team context on Arkiv. Built for the Arkiv hackathon on the Tiramisu testnet.</p>
+    </div>
+    <nav class="footer-nav" aria-label="Footer">
+      <a href="#viewer">Viewer</a>
+      <a href="#pipeline">Pipeline</a>
+      <a href="#features">Features</a>
+      <a href="#agents">Agents</a>
+      <a href="#cli">CLI</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="footer-meta mono">
+      <p>chain 7738577 · 2 s blocks</p>
+      <p>sha256 · xchacha20-poly1305</p>
+      <p>expiry 3 / 14 / 90 / 365 d</p>
+    </div>
+  </div>
+  <div class="wrap footer-base">
+    <span class="mono">contents above render from a seeded demo repo — connect a live repo id to read the real chain</span>
+  </div>
+</footer>
+
+<script src="js/app.js" defer></script>
+</body>
+</html>
