@@ -1,0 +1,919 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="color-scheme" content="light" />
+<title>Cogit — demo deck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --canvas:#f7f6f3;--surface:#ffffff;--surface-2:#fbfaf8;--surface-3:#f4f3f0;
+  --ink:#111111;--ink-2:#2f3437;--body:#57564f;--muted:#787774;--faint:#a5a29a;
+  --line:#eaeaea;--line-soft:#f0efeb;
+  --red-bg:#fdebec;--red-fg:#9f2f2d;--red-stroke:#b4483f;
+  --blue-bg:#e1f3fe;--blue-fg:#1f6c9f;
+  --green-bg:#edf3ec;--green-fg:#346538;
+  --yellow-bg:#fbf3db;--yellow-fg:#956400;
+  --gray-bg:#f1f1ef;
+  --serif:"Newsreader",Georgia,"Times New Roman",serif;
+  --sans:"Geist","Segoe UI",system-ui,sans-serif;
+  --mono:"Geist Mono","Cascadia Mono",Consolas,monospace;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;overflow:hidden}
+body{background:var(--canvas);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+::selection{background:var(--blue-bg)}
+a{color:inherit;text-decoration:none}
+.sprite{position:absolute;width:0;height:0;overflow:hidden}
+.ic{width:16px;height:16px;flex:none;display:inline-block;vertical-align:-3px;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.mono{font-family:var(--mono)}
+
+#stage{position:fixed;left:50%;top:50%;width:1600px;height:900px;transform-origin:center center;background:var(--canvas);overflow:hidden;border:1px solid var(--line)}
+.slide{position:absolute;inset:0;display:flex;flex-direction:column;padding:54px 80px 78px;opacity:0;visibility:hidden;transition:opacity .4s ease,visibility 0s linear .4s}
+.slide.is-active{opacity:1;visibility:visible;transition:opacity .5s cubic-bezier(.16,1,.3,1),visibility 0s}
+.s-head{flex:none}
+.s-body{flex:1;display:flex;flex-direction:column;gap:22px;justify-content:center;margin-top:26px}
+.eyebrow{font-family:var(--mono);font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin:0}
+.h1{font-family:var(--serif);font-weight:400;font-size:52px;line-height:1.07;letter-spacing:-.015em;margin:12px 0 0;max-width:30ch}
+.display{font-family:var(--serif);font-weight:400;font-size:64px;line-height:1.04;letter-spacing:-.016em;margin:14px 0 0}
+.display em{font-style:italic}
+.lede{font-size:19px;line-height:1.62;color:var(--body);max-width:76ch;margin:16px 0 0}
+.lede-tight{font-size:17px;line-height:1.6;color:var(--body);max-width:88ch;margin:12px 0 0}
+.footline{font-size:15px;line-height:1.6;color:var(--body);margin:0}
+.footline strong{color:var(--ink);font-weight:600}
+
+.slide.is-active [data-reveal]{animation:rise .65s cubic-bezier(.16,1,.3,1) both;animation-delay:calc(var(--d,0) * 85ms + 90ms)}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.slide.is-active [data-reveal]{animation:none}.slide,.slide.is-active{transition:none}}
+
+.ambient{position:absolute;inset:0;pointer-events:none;z-index:0}
+.amb-grid{position:absolute;inset:0;background-image:linear-gradient(to right,rgba(17,17,17,.03) 1px,transparent 1px),linear-gradient(to bottom,rgba(17,17,17,.03) 1px,transparent 1px);background-size:72px 72px;-webkit-mask-image:radial-gradient(ellipse 90% 64% at 50% 0%,#000 0%,transparent 72%);mask-image:radial-gradient(ellipse 90% 64% at 50% 0%,#000 0%,transparent 72%)}
+.amb-glow{position:absolute;width:900px;height:620px;border-radius:50%;filter:blur(120px)}
+.amb-glow.a{top:-260px;left:6%;background:radial-gradient(circle,rgba(31,108,159,.07),transparent 65%)}
+.amb-glow.b{top:60px;right:-240px;background:radial-gradient(circle,rgba(149,100,0,.06),transparent 65%)}
+.grain{position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.032;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E")}
+.slide>*{position:relative;z-index:1}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px}
+.pad{padding:26px 28px}
+.pad-sm{padding:17px 19px}
+.ct{font-family:var(--serif);font-size:23px;line-height:1.16;letter-spacing:-.01em;margin:0 0 10px}
+.cb{font-size:15.5px;line-height:1.62;color:var(--body);margin:0}
+.cb+.cb{margin-top:10px}
+.ml{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 12px}
+.ml-ic{display:flex;align-items:center;justify-content:space-between;margin:0 0 12px}
+.ml-ic .ic{width:16px;height:16px;color:var(--faint);margin:0}
+.ic-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.ic-head .ic{width:19px;height:19px;color:var(--faint)}
+.num{font-family:var(--mono);font-size:11.5px;color:var(--faint)}
+
+.cols2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.bento{display:grid;grid-template-columns:repeat(12,1fr);gap:18px}
+.sp4{grid-column:span 4}.sp5{grid-column:span 5}.sp6{grid-column:span 6}.sp7{grid-column:span 7}.sp8{grid-column:span 8}.sp12{grid-column:span 12}
+
+.chip{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:12px;color:var(--body);border:1px solid var(--line);border-radius:999px;padding:4px 11px;background:var(--surface)}
+.chip-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.chip-sm{display:inline-block;font-family:var(--mono);font-size:11.5px;color:var(--body);border:1px solid var(--line);border-radius:6px;background:var(--surface-2);padding:3px 8px;margin-top:10px}
+
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.badge{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11.5px;letter-spacing:.05em;border-radius:999px;padding:5px 12px}
+.badge-priv{background:var(--green-bg);color:var(--green-fg)}
+.badge-plain{background:var(--gray-bg);color:var(--body)}
+.badge-ok{background:var(--green-bg);color:var(--green-fg);border-radius:4px;padding:2.5px 8px;font-size:11px}
+.badge-bad{background:var(--red-bg);color:var(--red-fg);border-radius:4px;padding:2.5px 8px;font-size:11px}
+.badge-lock{background:var(--gray-bg);color:var(--body);border-radius:4px;padding:2.5px 8px;font-size:11px}
+
+.tag{display:inline-block;font-family:var(--mono);font-size:11px;letter-spacing:.03em;border-radius:4px;padding:2.5px 7px}
+.kind-scratch{background:var(--gray-bg);color:var(--body)}
+.kind-note{background:var(--blue-bg);color:var(--blue-fg)}
+.kind-decision{background:var(--green-bg);color:var(--green-fg)}
+.kind-milestone{background:var(--yellow-bg);color:var(--yellow-fg)}
+
+.term{border:1px solid var(--line);border-radius:12px;background:var(--surface);overflow:hidden}
+.term-dark{background:#141413;border-color:#232322;--t-fg:#e6e4de;--t-dim:#8f8d86;--t-prompt:#86a886;--t-str:#d3b075;--t-key:#86a9c9;--t-warn:#d3a55f;--t-ok:#86a886}
+.term-light{--t-fg:#2f3437;--t-dim:#a5a29a;--t-prompt:#346538;--t-str:#956400;--t-key:#1f6c9f;--t-warn:#956400;--t-ok:#346538}
+.term-bar{display:flex;align-items:center;gap:6px;padding:10px 14px;border-bottom:1px solid var(--line-soft)}
+.term-dark .term-bar{border-bottom-color:#262625}
+.dot{width:9px;height:9px;border-radius:50%;background:#e6d8ae}
+.dot:nth-child(1){background:#e6c8c4}
+.dot:nth-child(3){background:#bfd3bc}
+.term-dark .dot:nth-child(1){background:#5c4442}
+.term-dark .dot:nth-child(2){background:#5c5340}
+.term-dark .dot:nth-child(3){background:#44523f}
+.term-title{font-family:var(--mono);font-size:11px;color:var(--muted);margin-left:8px}
+.term-body{padding:16px 18px 18px;font-family:var(--mono);font-size:14.5px;line-height:1.85;color:var(--t-fg)}
+.term-body p{margin:0;white-space:pre-wrap;word-break:break-word}
+.t-prompt{color:var(--t-prompt)}
+.t-cmd{color:var(--t-fg)}
+.t-str{color:var(--t-str)}
+.t-key{color:var(--t-key);display:inline-block;min-width:7ch}
+.t-dim{color:var(--t-dim)}
+.t-warn{color:var(--t-warn)}
+.t-ok{color:var(--t-ok)}
+.t-gap{margin-top:12px !important}
+.cursor{display:inline-block;width:7px;height:14px;background:var(--t-fg);vertical-align:-2px;animation:blink 1.1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+
+.meta-strip{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0 28px;border-top:1px solid var(--line);margin:0;padding:0;list-style:none}
+.meta-cell{padding-top:14px}
+.meta-cell dt{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.meta-cell dd{margin:0;font-size:13.5px;color:var(--ink-2);font-weight:500}
+
+.cover-grid{display:grid;grid-template-columns:minmax(0,1.04fr) minmax(0,.96fr);gap:56px;align-items:center}
+
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:400;text-align:left;padding:0 14px 10px 0;border-bottom:1px solid var(--line)}
+.tbl td{font-size:14.5px;line-height:1.5;color:var(--body);padding:11px 14px 11px 0;border-bottom:1px solid var(--line-soft);vertical-align:top}
+.tbl tr:last-child td{border-bottom:none;padding-bottom:2px}
+.tbl .rl{font-family:var(--mono);font-size:12px;color:var(--muted);white-space:nowrap;padding-right:20px}
+.tbl th:last-child,.tbl td:last-child{background:var(--green-bg);padding-left:14px;padding-right:14px}
+.tbl th:last-child{color:var(--green-fg);border-bottom:none;border-radius:8px 8px 0 0;padding-top:8px}
+.tbl tr:last-child td:last-child{border-radius:0 0 8px 8px}
+.tbl .good{color:var(--ink-2)}
+.tbl .ic-check{width:12px;height:12px;color:var(--green-fg);margin-right:5px;vertical-align:-1px}
+
+.chat{display:flex;flex-direction:column;gap:12px}
+.msg{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 15px;max-width:56ch}
+.msg-name{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:5px}
+.msg-body{font-size:14.5px;line-height:1.6;color:var(--ink-2);font-family:var(--mono);margin:0}
+.secret{background:var(--red-bg);color:var(--red-fg);border:1px dashed #e3b8ba;border-radius:4px;padding:1px 6px;word-break:break-all}
+.chat-note{font-family:var(--mono);font-size:11.5px;color:var(--faint);margin:10px 0 0}
+.leakrow{display:grid;grid-template-columns:22px 1fr;gap:12px;align-items:start;padding:13px 0;border-top:1px solid var(--line-soft)}
+.leakrow:first-child{border-top:none;padding-top:0}
+.leakrow .ic{width:17px;height:17px;color:var(--red-stroke);margin-top:3px}
+.leakrow-t{font-size:15.5px;font-weight:600;margin:0 0 3px}
+.leakrow-b{font-size:14.5px;line-height:1.55;color:var(--body);margin:0}
+
+.flow{display:grid;grid-template-columns:minmax(0,1fr) 104px minmax(0,1fr) 104px minmax(0,1fr);align-items:stretch}
+.fnode{background:var(--surface);border:1px solid var(--line);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;padding:22px 16px;text-align:center}
+.fnode .ic{width:22px;height:22px;color:var(--ink-2)}
+.fnode-name{font-size:15px;font-weight:600}
+.fnode-sub{font-family:var(--mono);font-size:11.5px;color:var(--muted);line-height:1.5}
+.farrow{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;color:var(--faint);padding:0 8px}
+.farrow .ic{width:20px;height:20px}
+.fcap{font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;color:var(--muted);text-align:center;line-height:1.5}
+
+.steps{display:flex;flex-direction:column}
+.step{display:grid;grid-template-columns:40px 230px minmax(0,1fr);gap:3px 16px;padding:13px 0;border-top:1px solid var(--line)}
+.step:first-child{border-top:none;padding-top:0}
+.step:last-child{padding-bottom:2px}
+.step-n{grid-row:1;font-family:var(--mono);font-size:11.5px;color:var(--faint);padding-top:5px}
+.step-t{grid-row:1;font-size:16.5px;font-weight:600}
+.step-b{grid-row:2;grid-column:2 / 4;font-size:14.5px;line-height:1.55;color:var(--body);margin:0}
+
+.env-tree{font-family:var(--mono);font-size:13.5px;line-height:2.05}
+.env-row{display:grid;grid-template-columns:96px minmax(0,1fr) 74px;gap:10px;align-items:baseline;border-top:1px solid var(--line-soft);padding:1px 0}
+.env-row:first-child{border-top:none}
+.env-key{color:var(--muted)}
+.env-val{color:var(--ink-2)}
+.env-tag{font-size:10px;letter-spacing:.08em;text-transform:uppercase;justify-self:end}
+.env-pub .env-tag{color:var(--faint)}
+.env-row-sealed{border-top:1px solid var(--line);margin-top:4px;padding-top:6px}
+.env-row-sealed .env-val{color:var(--faint);letter-spacing:.06em}
+.env-priv{font-size:10px;letter-spacing:.08em;text-transform:uppercase;justify-self:end;color:var(--green-fg);background:var(--green-bg);border-radius:4px;padding:1px 6px}
+.plist{list-style:none;margin:0;padding:0}
+.plist li{display:grid;grid-template-columns:16px minmax(0,1fr);gap:10px;align-items:baseline;padding:7px 0;border-top:1px solid var(--line-soft);font-size:14.5px;line-height:1.5;color:var(--body)}
+.plist li:first-child{border-top:none;padding-top:0}
+.plist .ic{width:13px;height:13px;color:var(--faint);vertical-align:-1px}
+.pubnote{font-size:13px;line-height:1.55;color:var(--muted);margin:14px 0 0;border-top:1px solid var(--line);padding-top:12px}
+
+.keycard{display:flex;flex-direction:column}
+.kc-ic{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+.kc-ic .ic{width:20px;height:20px}
+.kc-blue{background:var(--blue-bg);color:var(--blue-fg)}
+.kc-green{background:var(--green-bg);color:var(--green-fg)}
+.kc-yellow{background:var(--yellow-bg);color:var(--yellow-fg)}
+.kc-title{font-size:17px;font-weight:600;margin:0 0 6px}
+.kc-title span{font-weight:400}
+.kc-body{font-size:14.5px;line-height:1.6;color:var(--body);margin:0}
+.banner{background:#141413;color:#e6e4de;border-radius:12px;padding:20px 26px;display:flex;align-items:center;justify-content:space-between;gap:26px}
+.banner-t{font-size:17px;line-height:1.5;margin:0;max-width:56ch}
+.banner-t strong{color:#fff;font-weight:600}
+.banner-chips{display:flex;flex-direction:column;gap:7px;flex:none}
+.banner-chip{font-family:var(--mono);font-size:12px;color:#d3b075;border:1px solid #2c2c2a;border-radius:6px;padding:5px 11px;white-space:nowrap}
+
+.gate-row{display:grid;grid-template-columns:172px minmax(0,1fr);gap:14px;align-items:baseline;padding:11px 0;border-top:1px solid var(--line-soft)}
+.gate-row:first-child{border-top:none;padding-top:0}
+.gate-name{font-family:var(--mono);font-size:11.5px;background:var(--red-bg);color:var(--red-fg);border-radius:4px;padding:3px 8px;justify-self:start}
+.gate-desc{font-size:15px;color:var(--body);line-height:1.55}
+.gate-out{margin-top:16px;border-top:1px solid var(--line);padding-top:13px;display:flex;flex-direction:column;gap:8px}
+.gate-out-row{display:flex;align-items:baseline;gap:8px;font-size:14.5px}
+.gate-out-row .ic{width:14px;height:14px;vertical-align:-2px}
+.gate-out-row.ok{color:var(--green-fg)}
+.gate-out-row.bad{color:var(--red-fg)}
+
+.persona{display:flex;flex-direction:column}
+.p-head{display:flex;align-items:center;gap:13px;margin-bottom:12px}
+.p-ic{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex:none}
+.p-ic .ic{width:19px;height:19px}
+.p-ic.blue{background:var(--blue-bg);color:var(--blue-fg)}
+.p-ic.green{background:var(--green-bg);color:var(--green-fg)}
+.p-ic.yellow{background:var(--yellow-bg);color:var(--yellow-fg)}
+.p-ic.red{background:var(--red-bg);color:var(--red-fg)}
+.p-name{font-size:16.5px;font-weight:600;margin:0}
+.p-body{font-size:14.5px;line-height:1.6;color:var(--body);margin:0 0 12px}
+
+.run{border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.run-row{display:grid;grid-template-columns:70px minmax(0,1fr);gap:12px;padding:10px 14px;border-top:1px solid var(--line-soft)}
+.run-row:first-child{border-top:none}
+.run-who{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;color:var(--faint);text-transform:uppercase;padding-top:2px}
+.run-msg{font-size:13.5px;line-height:1.55;color:var(--ink-2)}
+.run-call{font-family:var(--mono);font-size:13px;color:var(--blue-fg)}
+.run-dim{font-family:var(--mono);font-size:12.5px;color:var(--muted)}
+.run-ok{font-family:var(--mono);font-size:13px;color:var(--green-fg)}
+.run-ok .ic{width:12px;height:12px;margin-right:4px;vertical-align:-1px}
+.run-write{font-size:13.5px;color:var(--ink-2)}
+
+.chain-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 0;border-top:1px solid var(--line-soft)}
+.chain-row:first-child{border-top:none;padding-top:0}
+.chain-hash{font-family:var(--mono);font-size:13px;color:var(--ink-2)}
+.chain-meta{font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+.cipher{font-family:var(--mono);font-size:13px;color:var(--faint);letter-spacing:.04em;background:var(--surface-3);border:1px solid var(--line);border-radius:6px;padding:8px 12px;word-break:break-all;line-height:1.7}
+.cipher b{color:var(--ink-2);font-weight:500}
+
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.pcard{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:20px 22px;display:flex;flex-direction:column}
+.pc-head{display:flex;align-items:center;gap:10px;margin-bottom:9px}
+.pc-head .ic{width:17px;height:17px}
+.pc-head .blue{color:var(--blue-fg)}
+.pc-head .green{color:var(--green-fg)}
+.pc-head .yellow{color:var(--yellow-fg)}
+.pc-head .red{color:var(--red-fg)}
+.pc-title{font-size:15.5px;font-weight:600;margin:0}
+.pc-body{font-size:13.5px;line-height:1.58;color:var(--body);margin:0 0 10px}
+.pc-chip{font-family:var(--mono);font-size:11px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:3px 10px;align-self:flex-start;margin-top:auto;background:var(--surface-2)}
+
+.close-center{align-items:center;text-align:center}
+.close-center .h1{margin-left:auto;margin-right:auto;max-width:24ch}
+.close-term{width:820px;margin:0 auto;text-align:left}
+.stack-strip{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:6px}
+.foot-small{font-size:13px;color:var(--muted);margin:14px 0 0}
+.foot-small .mono{color:var(--faint)}
+
+.deck-ui{transition:opacity .3s ease}
+body.no-chrome .deck-ui{opacity:0;pointer-events:none}
+.topbar{position:fixed;top:0;left:0;right:0;height:3px;z-index:50;background:rgba(17,17,17,.06)}
+.progress{height:100%;width:0;background:var(--ink);transition:width .45s cubic-bezier(.16,1,.3,1)}
+.bottombar{position:fixed;left:0;right:0;bottom:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:11px 18px;background:rgba(247,246,243,.85);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-top:1px solid var(--line)}
+.deck-left{display:flex;align-items:baseline;gap:10px;min-width:0;font-family:var(--mono);font-size:11px;color:var(--muted)}
+.deck-brand{color:var(--ink);font-weight:500;letter-spacing:.02em}
+.deck-sep{color:var(--faint)}
+.deck-title{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.deck-hint{color:var(--faint);margin-left:14px}
+.deck-right{display:flex;align-items:center;gap:8px}
+.counter{font-family:var(--mono);font-size:11.5px;color:var(--body);margin-right:6px}
+.ctl{width:30px;height:30px;border:1px solid var(--line);border-radius:7px;background:var(--surface);color:var(--body);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:background-color .13s ease,color .13s ease}
+.ctl:hover{background:var(--surface-3);color:var(--ink)}
+.ctl .ic{width:14px;height:14px}
+.ctl:active{transform:scale(.97)}
+
+@media print{
+  body{overflow:visible}
+  #stage{position:static;transform:none !important;width:auto;height:auto;border:none}
+  .slide{position:static;display:flex !important;opacity:1 !important;visibility:visible !important;height:900px;page-break-after:always;border-bottom:1px solid var(--line)}
+  .deck-ui,.grain{display:none !important}
+}
+</style>
+</head>
+<body>
+
+<svg class="sprite" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+  <symbol id="i-key" viewBox="0 0 24 24"><circle cx="8" cy="8" r="4.5"/><path d="m11.2 11.2 8.3 8.3M16.5 16.5l2.3-2.3M13.6 13.6l2.3 2.3"/></symbol>
+  <symbol id="i-wallet" viewBox="0 0 24 24"><rect x="4" y="6.5" width="16" height="11" rx="2.2"/><path d="M15 12h3.5"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 5 6v5c0 4.5 3 8 7 10 4-2 7-5.5 7-10V6l-7-3z"/><path d="m9.5 11.5 2 2 3.5-4"/></symbol>
+  <symbol id="i-branch" viewBox="0 0 24 24"><circle cx="7" cy="5" r="2.4"/><circle cx="7" cy="19" r="2.4"/><circle cx="17" cy="9" r="2.4"/><path d="M7 7.4v9.2M9.4 5H12a3 3 0 0 1 3 3v1"/></symbol>
+  <symbol id="i-node" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="2.4"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h15"/><path d="m13 6 6 6-6 6"/></symbol>
+  <symbol id="i-db" viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v12c0 1.7 3.1 3 7 3s7-1.3 7-3V6"/><path d="M5 12c0 1.7 3.1 3 7 3s7-1.3 7-3"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H9l-5 4z"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c.8-3.4 3.6-5 7-5s6.2 1.6 7 5"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9.5" cy="8.5" r="3.2"/><path d="M3.5 19.5c.7-3 3.1-4.5 6-4.5s5.3 1.5 6 4.5"/><path d="M16 5.6a3.2 3.2 0 0 1 0 5.8"/><path d="M18 15.3c1.7.6 2.9 2 3.4 4.2"/></symbol>
+  <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M4 12s3-6 8-6 8 6 8 6-3 6-8 6-8-6-8-6z"/><circle cx="12" cy="12" r="2.6"/><path d="M4.5 4.5l15 15"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v4.5l3 2"/></symbol>
+  <symbol id="i-expand" viewBox="0 0 24 24"><path d="M5 9V5h4M15 5h4v4M19 15v4h-4M9 19H5v-4"/></symbol>
+  <symbol id="i-chev-l" viewBox="0 0 24 24"><path d="m14.5 6-6 6 6 6"/></symbol>
+  <symbol id="i-chev-r" viewBox="0 0 24 24"><path d="m9.5 6 6 6-6 6"/></symbol>
+  <symbol id="i-term" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="m8 10 3 3-3 3M13.5 16H16"/></symbol>
+</svg>
+
+<main id="stage">
+  <div class="ambient" aria-hidden="true"><div class="amb-grid"></div><div class="amb-glow a"></div><div class="amb-glow b"></div></div>
+
+  <section class="slide is-active" data-title="cogit — private team memory">
+    <div class="s-body cover-grid">
+      <div>
+        <p class="eyebrow" data-reveal style="--d:0">encrypted team context · arkiv tiramisu testnet</p>
+        <h1 class="display" data-reveal style="--d:1">Team memory for coding agents, <em>private by construction</em>.</h1>
+        <p class="lede" data-reveal style="--d:2">Cogit commits short, encrypted, wallet-signed context to Arkiv — from the CLI or straight out of your agent loop. Teammates pull it verified and decrypted, secrets never land in a chat log, and nothing readable ever hits the chain.</p>
+        <div class="badges" data-reveal style="--d:3">
+          <span class="badge badge-priv">privacy track</span>
+          <span class="badge badge-plain">MCP · stdio</span>
+          <span class="badge badge-plain">35 tests passing</span>
+        </div>
+      </div>
+      <div data-reveal style="--d:2">
+        <div class="term term-dark">
+          <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="term-title">anurag@atlas — cogit</span></div>
+          <div class="term-body">
+            <p><span class="t-prompt">$</span> <span class="t-cmd">cogit commit -m <span class="t-str">"Reports: Postgres + JSONB"</span> --kind decision</span></p>
+            <p><span class="t-key">build</span> envelope v1 · kind decision · agent opencode</p>
+            <p><span class="t-key">seal</span> xchacha20-poly1305 · 24-byte nonce · 412 B ciphertext</p>
+            <p><span class="t-key">hash</span> 0x7c9e1f…f5b8a4d2 <span class="t-dim">sha256 · canonical json</span></p>
+            <p><span class="t-key">sign</span> wallet 0x225f…6af7 <span class="t-dim">signMessage(commitHash)</span></p>
+            <p><span class="t-key">write</span> entity 0xb2a7…4ce0 · <span class="t-warn">expires in 90 d</span></p>
+            <p><span class="t-key">head</span> branch anurag → 0x7c9e…a4d2</p>
+            <p class="t-gap"><span class="t-prompt">$</span> <span class="t-cmd">cogit pull ritesh</span></p>
+            <p><span class="t-ok">4 commits · 4 verified · 0 invalid</span> <span class="t-dim">→ .cogit/context/ritesh.md</span></p>
+            <p><span class="cursor"></span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <dl class="meta-strip" data-reveal style="--d:4">
+      <div class="meta-cell"><dt>Chain</dt><dd>tiramisu · 7738577</dd></div>
+      <div class="meta-cell"><dt>Cipher</dt><dd>XChaCha20-Poly1305</dd></div>
+      <div class="meta-cell"><dt>Integrity</dt><dd>4 ordered checks</dd></div>
+      <div class="meta-cell"><dt>Key custody</dt><dd>client-side only</dd></div>
+      <div class="meta-cell"><dt>Data life</dt><dd>3 · 14 · 90 · 365 d</dd></div>
+    </dl>
+  </section>
+
+  <section class="slide" data-title="the problem">
+    <header class="s-head">
+      <p class="eyebrow" data-reveal style="--d:0">01 — the problem</p>
+      <h2 class="h1" data-reveal style="--d:1">Every session ends. Everything the agent learned dies with it.</h2>
+      <p class="lede-tight" data-reveal style="--d:2">Context lives in the moment — and evaporates the second the window closes.</p>
+    </header>
+    <div class="s-body">
+      <div class="cols3">
+        <article class="card pad" data-reveal style="--d:3">
+          <div class="ic-head"><span class="num">01</span><svg class="ic"><use href="#i-users"/></svg></div>
+          <h3 class="ct">Teammates re-explain</h3>
+          <p class="cb">The same decisions and onboarding, every week. "What did we standardize on for pagination?" starts from zero, again.</p>
+        </article>
+        <article class="card pad" data-reveal style="--d:4">
+          <div class="ic-head"><span class="num">02</span><svg class="ic"><use href="#i-term"/></svg></div>
+          <h3 class="ct">Agents re-derive</h3>
+          <p class="cb">A fresh session guesses architecture that was already settled — every agent, every teammate, every project, separately.</p>
+        </article>
+        <article class="card pad" data-reveal style="--d:5">
+          <div class="ic-head"><span class="num">03</span><svg class="ic"><use href="#i-chat"/></svg></div>
+          <h3 class="ct">"Why did we do this?"</h3>
+          <p class="cb">The answer exists somewhere in a chat log nobody reads — if it exists at all. Nothing expires on purpose; it just gets lost.</p>
+        </article>
+      </div>
+      <p class="footline" data-reveal style="--d:6"><strong>The knowledge existed.</strong> It was never captured where the next session — human or agent — could find it.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-title="the privacy problem">
+    <header class="s-head">
+      <p class="eyebrow" data-reveal style="--d:0">02 — the privacy problem</p>
+      <h2 class="h1" data-reveal style="--d:1">And when context is shared through chats, secrets leak with it.</h2>
+    </header>
+    <div class="s-body">
+      <div class="cols2" style="grid-template-columns:1fr .92fr">
+        <div class="card pad" data-reveal style="--d:2">
+          <p class="ml">#team-backend — 14:32</p>
+          <div class="chat">
+            <div class="msg">
+              <span class="msg-name">ritesh</span>
+              <p class="msg-body">staging DB for reports: <span class="secret">postgres://reports:S3cret…@db.stg</span> — use this one</p>
+            </div>
+            <div class="msg">
+              <span class="msg-name">anurag</span>
+              <p class="msg-body">deploy bot hot wallet key <span class="secret">0x4f3a9c…81c2</span>, keep it between us</p>
+            </div>
+            <div class="msg">
+              <span class="msg-name">ritesh</span>
+              <p class="msg-body">👍 also, we went <b>Postgres + JSONB</b> for the reports table — decided yesterday</p>
+            </div>
+          </div>
+          <p class="chat-note">indexed · retained indefinitely · mirrored to every device · one screenshot from public</p>
+        </div>
+        <div data-reveal style="--d:3">
+          <div class="leakrow">
+            <svg class="ic"><use href="#i-x"/></svg>
+            <div><p class="leakrow-t">Plaintext by default</p><p class="leakrow-b">Every member, integration, and future export reads it — including the credentials.</p></div>
+          </div>
+          <div class="leakrow">
+            <svg class="ic"><use href="#i-x"/></svg>
+            <div><p class="leakrow-t">Permanent by default</p><p class="leakrow-b">Nothing expires, nothing is revocable. A pasted private key is a pasted private key forever.</p></div>
+          </div>
+          <div class="leakrow">
+            <svg class="ic"><use href="#i-x"/></svg>
+            <div><p class="leakrow-t">Unprovable by nature</p><p class="leakrow-b">Anyone can paste a "decision". Nobody can prove who actually made it.</p></div>
+          </div>
+        </div>
+      </div>
+      <p class="footline" data-reveal style="--d:4">Shared context should be readable by <strong>exactly the team</strong> — and signed by <strong>exactly its author</strong>. That is the bar Cogit is built to.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-title="the gap">
+    <header class="s-head">
+      <p class="eyebrow" data-reveal style="--d:0">03 — the gap</p>
+      <h2 class="h1" data-reveal style="--d:1">Git proves the diff. Chat proves nothing. Neither hides anything.</h2>
+    </header>
+    <div class="s-body">
+      <table class="tbl" data-reveal style="--d:2">
+        <thead>
+          <tr><th></th><th>git</th><th>chat</th><th>cogit</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="rl">identity</td>
+            <td>user.email — self-declared, forgeable</td>
+            <td>usernames — no proof</td>
+            <td class="good"><svg class="ic ic-check"><use href="#i-check"/></svg>wallet address — proven by signature</td>
+          </tr>
+          <tr>
+            <td class="rl">authorship</td>
+            <td>optional GPG, manual key distribution</td>
+            <td>unknowable after the fact</td>
+            <td class="good"><svg class="ic ic-check"><use href="#i-check"/></svg>four ordered checks against chain state</td>
+          </tr>
+          <tr>
+            <td class="rl">read access</td>
+            <td>whoever can clone</td>
+            <td>whoever is in the room — and everyone later</td>
+            <td class="good"><svg class="ic ic-check"><use href="#i-check"/></svg>whoever holds the group key</td>
+          </tr>
+          <tr>
+            <td class="rl">secrets</td>
+            <td>easy to commit by accident</td>
+            <td>pasted in plaintext, forever</td>
+            <td class="good"><svg class="ic ic-check"><use href="#i-check"/></svg>encrypted before they leave the machine</td>
+          </tr>
+          <tr>
+            <td class="rl">lifecycle</td>
+            <td>forever</td>
+            <td>as long as the vendor says</td>
+            <td class="good"><svg class="ic ic-check"><use href="#i-check"/></svg>per-kind TTL — 3 · 14 · 90 · 365 d</td>
+          </tr>
+          <tr>
+            <td class="rl">agent interface</td>
+            <td>—</td>
+            <td>—</td>
+            <td class="good"><svg class="ic ic-check"><use href="#i-check"/></svg>MCP — context_commit · pull · log</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="slide" data-title="the solution">
+    <header class="s-head">
+      <p class="eyebrow" data-reveal style="--d:0">04 — the solution</p>
+      <h2 class="h1" data-reveal style="--d:1">Cogit: one durable place for context that agents read and write on their own.</h2>
+    </header>
+    <div class="s-body">
+      <div class="flow" data-reveal style="--d:2">
+        <div class="fnode">
+          <svg class="ic"><use href="#i-term"/></svg>
+          <span class="fnode-name">Anurag's agent</span>
+          <span class="fnode-sub">commits a decision<br/>on its own branch</span>
+        </div>
+        <div class="farrow">
+          <svg class="ic"><use href="#i-arrow"/></svg>
+          <span class="fcap">signed +<br/>encrypted</span>
+        </div>
+        <div class="fnode">
+          <svg class="ic"><use href="#i-db"/></svg>
+          <span class="fnode-name">Arkiv · tiramisu</span>
+          <span class="fnode-sub">entity with public attrs<br/>+ sealed payload</span>
+        </div>
+        <div class="farrow">
+          <svg class="ic"><use href="#i-arrow"/></svg>
+          <span class="fcap">pull · verify ·<br/>decrypt</span>
+        </div>
+        <div class="fnode">
+          <svg class="ic"><use href="#i-term"/></svg>
+          <span class="fnode-name">Ritesh's agent</span>
+          <span class="fnode-sub">follows the decision<br/>with no hints</span>
+        </div>
+      </div>
+      <div class="cols3">
+        <article class="card pad-sm" data-reveal style="--d:3">
+          <p class="ml ml-ic">F1 — commit <svg class="ic"><use href="#i-lock"/></svg></p>
+          <p class="cb">An agent or human records a sealed entry on its branch. Expiry matches importance: scratch dies in days, milestones live a year.</p>
+        </article>
+        <article class="card pad-sm" data-reveal style="--d:4">
+          <p class="ml ml-ic">F2 — pull <svg class="ic"><use href="#i-branch"/></svg></p>
+          <p class="cb">A teammate's agent pulls before starting related work. Every entry verified, decrypted, followed — without asking anyone for anything.</p>
+        </article>
+        <article class="card pad-sm" data-reveal style="--d:5">
+          <p class="ml ml-ic">F3 — view <svg class="ic"><use href="#i-node"/></svg></p>
+          <p class="cb">A page draws branches as a graph, lists commits, and shows decrypted context with verification status. The key never leaves the tab.</p>
+        </article>
+      </div>
+      <p class="footline mono" data-reveal style="--d:6;font-size:13.5px;color:var(--muted)">MCP tools over stdio — context_commit · context_pull · context_log</p>
+    </div>
+  </section>
+
+  <section class="slide" data-title="how a commit moves">
+    <header class="s-head">
+      <p class="eyebrow" data-reveal style="--d:0">05 — how a commit moves</p>
+      <h2 class="h1" data-reveal style="--d:1">Build, seal, hash, sign, write — in that order.</h2>
+    </header>
+    <div class="s-body">
+      <div class="cols2" style="grid-template-columns:1.08fr .92fr;align-items:center">
+        <div class="steps" data-reveal style="--d:2">
+          <div class="step">
+            <span class="step-n">01</span><span class="step-t">Build</span>
+            <p class="step-b">The body — summary, details, tags — is wrapped in a versioned envelope with branch, parent, author, kind, and timestamp. <span class="chip-sm mono">envelope v1 · kind decision</span></p>
+          </div>
+          <div class="step">
+            <span class="step-n">02</span><span class="step-t">Encrypt</span>
+            <p class="step-b">Sealed with XChaCha20-Poly1305 under the repo's 32-byte group key and a fresh 24-byte nonce. Only key holders can read it. <span class="chip-sm mono">xchacha20-poly1305</span></p>
+          </div>
+          <div class="step">
+            <span class="step-n">03</span><span class="step-t">Hash</span>
+            <p class="step-b">sha256 over canonical JSON — sorted keys, no whitespace. Change one byte of ciphertext and the hash moves. <span class="chip-sm mono">sha256(canonicalJson)</span></p>
+          </div>
+          <div class="step">
+            <span class="step-n">04</span><span class="step-t">Sign</span>
+            <p class="step-b">The wallet signs the commit hash; the signature travels inside the envelope and anyone can recover the signer. <span class="chip-sm mono">sig = signMessage(commitHash)</span></p>
+          </div>
+          <div class="step">
+            <span class="step-n">05</span><span class="step-t">Write</span>
+            <p class="step-b">One Arkiv entity with public attributes and an expiry set by kind; the branch head is patched to the new hash. <span class="chip-sm mono">entity + attrs · head patch</span></p>
+          </div>
+        </div>
+        <div data-reveal style="--d:3">
+          <div class="term term-dark">
+            <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="term-title">cogit commit — pipeline</span></div>
+            <div class="term-body">
+              <p><span class="t-prompt">$</span> <span class="t-cmd">cogit commit -m <span class="t-str">"Postgres + JSONB for reports"</span> --kind decision</span></p>
+              <p><span class="t-key">01 build</span> envelope v1 · parent 0x03e7… · branch anurag</p>
+              <p><span class="t-key">02 seal</span> xchacha20-poly1305 · 24-byte nonce · 412 B</p>
+              <p><span class="t-key">03 hash</span> 0x7c9e1f…f5b8a4d2 · <span class="t-dim">sha256 canonical json</span></p>
+              <p><span class="t-key">04 sign</span> 0x225f…6af7 · <span class="t-dim">signMessage(commitHash)</span></p>
+              <p><span class="t-key">05 write</span> entity 0xb2a7…4ce0 · <span class="t-warn">expires in 90 d</span></p>
+              <p class="t-gap"><span class="t-ok">branch head anurag → 0x7c9e…a4d2</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-title="privacy architecture">
+    <header class="s-head">
+      <p class="eyebrow" data-reveal style="--d:0">06 — privacy architecture</p>
+      <h2 class="h1" data-reveal style="--d:1">The ledger carries proof. It never carries plaintext.</h2>
+    </header>
+    <div class="s-body">
+      <div class="cols3" data-reveal style="--d:2">
+        <div class="card pad">
+          <p class="ml">Public — anyone can read</p>
+          <ul class="plist">
+            <li><svg class="ic"><use href="#i-check"/></svg>repo &amp; branch names</li>
+            <li><svg class="ic"><use href="#i-check"/></svg>commit kinds &amp; tags' existence</li>
+            <li><svg class="ic"><use href="#i-check"/></svg>author wallet addresses</li>
+            <li><svg class="ic"><use href="#i-check"/></svg>timestamps &amp; expiry</li>
+            <li><svg class="ic"><use href="#i-check"/></svg>hashes — for verification</li>
+          </ul>
+          <p class="pubnote">Enough to query, verify, and expire the work. Nothing more.</p>
+        </div>
+        <div class="card pad">
+          <p class="ml">Sealed payload — one entity</p>
+          <div class="env-tree">
+            <div class="env-row"><span class="env-key">type</span><span class="env-val">commit</span><span class="env-tag">public</span></div>
+            <div class="env-row"><span class="env-key">branch</span><span class="env-val">anurag</span><span class="env-tag">public</span></div>
+            <div class="env-row"><span class="env-key">author</span><span class="env-val">0x225f…6af7</span><span class="env-tag">public</span></div>
+            <div class="env-row"><span class="env-key">kind</span><span class="env-val">decision</span><span class="env-tag">public</span></div>
+            <div class="env-row"><span class="env-key">hash</span><span class="env-val">0x7c9e…a4d2</span><span class="env-tag">public</span></div>
+            <div class="env-row env-row-sealed"><span class="env-key">payload</span><span class="env-val">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span><span class="env-priv">sealed</span></div>
+          </div>
+        </div>
+        <div class="card pad">
+          <p class="ml">Private — group-key holders only</p>
+          <ul class="plist">
+            <li><svg class="ic"><use href="#i-lock"/></svg>summaries &amp; detailed notes</li>
+            <li><svg class="ic"><use href="#i-lock"/></svg>tags &amp; code snippets</li>
+            <li><svg class="ic"><use href="#i-lock"/></svg>credentials &amp; connection strings</li>
+            <li><svg class="ic"><use href="#i-lock"/></svg>private keys shared as context</li>
+            <li><svg class="ic"><use href="#i-lock"/></svg>the group key itself</li>
+          </ul>
+          <p class="pubnote">Sealed with XChaCha20-Poly1305 under the repo's 32-byte group key — fresh nonce per commit.</p>
+        </div>
+      </div>
+      <p class="footline" data-reveal style="--d:3">A verifier checks the <strong>hash</strong> and the <strong>signature</strong> — never the contents. Proof and privacy travel together.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-title="keys &amp; identity">
+    <header class="s-head">
+      <p class="eyebrow" data-reveal style="--d:0">07 — keys &amp; identity</p>
+      <h2 class="h1" data-reveal style="--d:1">Two keys. Neither one ever travels.</h2>
+    </header>
+    <div class="s-body">
+      <div class="cols3">
+        <article class="card pad keycard" data-reveal style="--d:2">
+          <div class="kc-ic kc-blue"><svg class="ic"><use href="#i-wallet"/></svg></div>
+          <h3 class="kc-title">Wallet key <span>— proves you wrote it</span></h3>
+          <p class="kc-body">Lives in <span class="mono">.env</span> on your machine. It signs the commit hash; verifiers recover your address from the signature alone. The key itself is in no envelope, no repo, no chat — it never needs to be pasted anywhere.</p>
+        </article>
+        <article class="card pad keycard" data-reveal style="--d:3">
+          <div class="kc-ic kc-green"><svg class="ic"><use href="#i-key"/></svg></div>
+          <h3 class="kc-title">Group key <span>— grants reading</span></h3>
+          <p class="kc-body">32 random bytes generated at <span class="mono">init</span>. <span class="mono">cogit invite</span> shares it as <span class="mono">cogit1:&lt;repoId&gt;:&lt;key&gt;</span> — read access for exactly the people you add. Stored mode 600, gitignored.</p>
+        </article>
+        <article class="card pad keycard" data-reveal style="--d:4">
+          <div class="kc-ic kc-yellow"><svg class="ic"><use href="#i-eye-off"/></svg></div>
+          <h3 class="kc-title">The viewer <span>— decrypts in the tab</span></h3>
+          <p class="kc-body">The group key lives in browser memory only, per session. There is no backend to hold it — so there is no server that could leak it, and none that ever sees your plaintext.</p>
+        </article>
+      </div>
+      <div class="banner" data-reveal style="--d:5">
+        <p class="banner-t"><strong>Private keys pasted in chats are forever.</strong> Cogit removes the need: the key signs locally and never leaves the machine, while the context around it rides encrypted end-to-end.</p>
+        <div class="banner-chips">
+          <span class="banner-chip mono">signMessage → recover address</span>
+          <span class="banner-chip mono">invite → cogit1:… → decrypt locally</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-title="verification">
+    <header class="s-head">
+      <p class="eyebrow" data-reveal style="--d:0">08 — verification</p>
+      <h2 class="h1" data-reveal style="--d:1">Verify first. Decrypt only after.</h2>
+    </header>
+    <div class="s-body">
+      <div class="cols2" style="grid-template-columns:1.06fr .94fr;align-items:center">
+        <div class="card pad" data-reveal style="--d:2">
+          <p class="ml">Four ordered checks — first failure wins</p>
+          <div class="gate-row"><span class="gate-name">BAD_HASH</span><span class="gate-desc">recomputed hash ≠ envelope hash</span></div>
+          <div class="gate-row"><span class="gate-name">BAD_SIGNATURE</span><span class="gate-desc">recovered address ≠ envelope author</span></div>
+          <div class="gate-row"><span class="gate-name">OWNER_MISMATCH</span><span class="gate-desc">entity owner ≠ author — someone else's wallet wrote it</span></div>
+          <div class="gate-row"><span class="gate-name">NOT_MEMBER</span><span class="gate-desc">author not in the repo member list</span></div>
+          <div class="gate-out">
+            <div class="gate-out-row ok"><svg class="ic"><use href="#i-check"/></svg>passes all four → decrypt, show, hand to agents</div>
+            <div class="gate-out-row bad"><svg class="ic"><use href="#i-x"/></svg>fails any → red badge, reason shown, never decrypted</div>
+          </div>
+        </div>
+        <div data-reveal style="--d:3">
+          <div class="term term-dark">
+            <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="term-title">verify — 4 checks</span></div>
+            <div class="term-body">
+              <p><span class="t-ok">✓</span> hash 0x7c9e1f…a4d2 <span class="t-dim">matches recomputation</span></p>
+              <p><span class="t-ok">✓</span> signature recovers 0x225f…6af7 <span class="t-dim">= author</span></p>
+              <p><span class="t-ok">✓</span> owner 0x225f…6af7 <span class="t-dim">= author</span></p>
+              <p><span class="t-ok">✓</span> member anurag ∈ [anurag, adarsh, ritesh, smriti, kushal]</p>
+              <p class="t-gap"><span class="t-warn">×</span> copy 0xd41b…f0c9 fails owner check <span class="t-dim">— shown red, not decrypted</span></p>
+            </div>
+          </div>
+          <p class="footline" style="margin-top:16px;font-size:14px">OWNER_MISMATCH is the check git cannot make: a copied commit re-posted by another wallet is rejected even with a valid signature.</p>
+        </div>
+      </div>
+      <p class="footline" data-reveal style="--d:4"><strong>Invalid entries never decrypt</strong> — junk cannot even try to reach Claude Code, Cursor, or opencode.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-title="who benefits">
+    <header class="s-head">
+      <p class="eyebrow" data-reveal style="--d:0">09 — who benefits</p>
+      <h2 class="h1" data-reveal style="--d:1">Who benefits — and how.</h2>
+    </header>
+    <div class="s-body">
+      <div class="cols2">
+        <article class="card pad persona" data-reveal style="--d:2">
+          <div class="p-head"><span class="p-ic blue"><svg class="ic"><use href="#i-term"/></svg></span><h3 class="p-name">Developers building with agents</h3></div>
+          <p class="p-body">Stop re-explaining. Pull a branch and your agent starts exactly where the team left off — verified, decrypted, followed.</p>
+          <span class="chip-sm mono">cogit pull &lt;branch&gt;</span>
+        </article>
+        <article class="card pad persona" data-reveal style="--d:3">
+          <div class="p-head"><span class="p-ic green"><svg class="ic"><use href="#i-lock"/></svg></span><h3 class="p-name">Teams carrying real secrets</h3></div>
+          <p class="p-body">Credentials, keys, and snippets in context are encrypted end-to-end. Nothing lands in a chat log; nothing readable lands on-chain.</p>
+          <span class="chip-sm mono">seal → commit → expires</span>
+        </article>
+        <article class="card pad persona" data-reveal style="--d:4">
+          <div class="p-head"><span class="p-ic yellow"><svg class="ic"><use href="#i-users"/></svg></span><h3 class="p-name">The agents themselves</h3></div>
+          <p class="p-body">A durable memory they can trust without a human relaying it: commit after decisions, pull before dependent work, log to survey.</p>
+          <span class="chip-sm mono">context_commit / context_pull / context_log</span>
+        </article>
+        <article class="card pad persona" data-reveal style="--d:5">
+          <div class="p-head"><span class="p-ic red"><svg class="ic"><use href="#i-shield"/></svg></span><h3 class="p-name">Privacy &amp; security reviewers</h3></div>
+          <p class="p-body">No backend, no custodians. Pseudonymous wallets, verify-then-decrypt, and data that expires by design — auditable, not just promised.</p>
+          <span class="chip-sm mono">e2e · non-custodial · self-expiring</span>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-title="live demo">
+    <header class="s-head">
+      <p class="eyebrow" data-reveal style="--d:0">10 — live demo</p>
+      <h2 class="h1" data-reveal style="--d:1">Two agents, two wallets, no hints.</h2>
+    </header>
+    <div class="s-body">
+      <div class="cols2" style="grid-template-columns:1.05fr .95fr;align-items:center">
+        <div class="card pad" data-reveal style="--d:2">
+          <p class="ml">One real session, replayed</p>
+          <div class="run">
+            <div class="run-row"><span class="run-who">you</span><span class="run-msg">"write the DB schema for the reports page"</span></div>
+            <div class="run-row"><span class="run-who">agent</span><span class="run-msg run-call">context_log <span class="run-dim">{ }</span></span></div>
+            <div class="run-row"><span class="run-who">cogit</span><span class="run-msg run-dim">12 commits · 5 branches · 1 invalid skipped</span></div>
+            <div class="run-row"><span class="run-who">agent</span><span class="run-msg run-call">context_pull <span class="run-dim">{ "branch": "anurag" }</span></span></div>
+            <div class="run-row"><span class="run-who">cogit</span><span class="run-msg run-ok"><svg class="ic"><use href="#i-check"/></svg>6 commits · every signature verified</span></div>
+            <div class="run-row"><span class="run-who">cogit</span><span class="run-msg run-dim">decision · Postgres + JSONB for the reports table; wallet-signature auth</span></div>
+            <div class="run-row"><span class="run-who">agent</span><span class="run-msg run-write">wrote <span class="mono">db/migrations/0001_create_reports.sql</span> — matching the decision, no hints needed</span></div>
+          </div>
+        </div>
+        <div class="card pad" data-reveal style="--d:3">
+          <p class="ml">What's on chain meanwhile</p>
+          <div class="chain-row">
+            <span class="tag kind-decision">decision</span>
+            <span class="chain-hash">0x03e7f665… <span class="chain-meta">branch anurag · wallet 0x225f…6af7</span></span>
+            <span class="badge-ok">verified</span>
+          </div>
+          <div class="chain-row">
+            <span class="tag kind-note">note</span>
+            <span class="chain-hash">0x4cf13852… <span class="chain-meta">branch ritesh · wallet 0x9c31…d40e</span></span>
+            <span class="badge-ok">verified</span>
+          </div>
+          <div class="chain-row">
+            <span class="tag kind-note">payload</span>
+            <span class="cipher">9fCq <b>· 412 B ciphertext</b> · k2A= — unreadable outside the repo</span>
+            <span class="badge-lock">sealed</span>
+          </div>
+          <p class="footline" style="margin-top:14px;font-size:14px">Both commits verified cross-wallet from the other's machine. The credentials inside the decision <strong>never left ciphertext</strong>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-title="privacy track">
+    <header class="s-head">
+      <p class="eyebrow" data-reveal style="--d:0">11 — privacy track</p>
+      <h2 class="h1" data-reveal style="--d:1">This is why it belongs in the privacy track.</h2>
+    </header>
+    <div class="s-body">
+      <div class="pgrid">
+        <article class="pcard" data-reveal style="--d:2">
+          <div class="pc-head"><svg class="ic green"><use href="#i-lock"/></svg><h3 class="pc-title">End-to-end encryption</h3></div>
+          <p class="pc-body">XChaCha20-Poly1305 with keys generated and held client-side. The chain only ever sees ciphertext.</p>
+          <span class="pc-chip">seal before it leaves</span>
+        </article>
+        <article class="pcard" data-reveal style="--d:3">
+          <div class="pc-head"><svg class="ic blue"><use href="#i-db"/></svg><h3 class="pc-title">Non-custodial by architecture</h3></div>
+          <p class="pc-body">No backend exists. The CLI, MCP server, and viewer all talk to Arkiv directly — there is no server that could see plaintext.</p>
+          <span class="pc-chip">there is no server</span>
+        </article>
+        <article class="pcard" data-reveal style="--d:4">
+          <div class="pc-head"><svg class="ic yellow"><use href="#i-user"/></svg><h3 class="pc-title">Pseudonymous identity</h3></div>
+          <p class="pc-body">Authorship is a wallet address proven by signature — accountability without doxxing anyone on the team.</p>
+          <span class="pc-chip">recover, don't reveal</span>
+        </article>
+        <article class="pcard" data-reveal style="--d:5">
+          <div class="pc-head"><svg class="ic green"><use href="#i-key"/></svg><h3 class="pc-title">Selective disclosure</h3></div>
+          <p class="pc-body">Read access extends only by explicit invite; branch heads are single-writer by construction. Sharing stays deliberate.</p>
+          <span class="pc-chip">invite = read only</span>
+        </article>
+        <article class="pcard" data-reveal style="--d:6">
+          <div class="pc-head"><svg class="ic red"><use href="#i-clock"/></svg><h3 class="pc-title">Minimization over time</h3></div>
+          <p class="pc-body">Per-kind expiry — 3 / 14 / 90 / 365 days — deletes what's no longer needed, enforced by the network, not a cron.</p>
+          <span class="pc-chip">decay by design</span>
+        </article>
+        <article class="pcard" data-reveal style="--d:7">
+          <div class="pc-head"><svg class="ic blue"><use href="#i-shield"/></svg><h3 class="pc-title">Integrity before exposure</h3></div>
+          <p class="pc-body">Unverified entries are never decrypted and never handed to an agent. Junk cannot even attempt to be read.</p>
+          <span class="pc-chip">verify, then decrypt</span>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-title="run it">
+    <div class="s-body close-center">
+      <p class="eyebrow" data-reveal style="--d:0">12 — run it</p>
+      <h2 class="h1" data-reveal style="--d:1">Context that outlives the session — without outliving the secrets.</h2>
+      <div class="close-term" data-reveal style="--d:2">
+        <div class="term term-dark">
+          <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="term-title">fresh clone → live in minutes</span></div>
+          <div class="term-body">
+            <p><span class="t-prompt">$</span> <span class="t-cmd">pnpm install && pnpm build</span> <span class="t-dim"># 35 tests · standalone cli + mcp</span></p>
+            <p><span class="t-prompt">$</span> <span class="t-cmd">cogit init team-brain</span> <span class="t-dim"># group key created, mode 600</span></p>
+            <p><span class="t-prompt">$</span> <span class="t-cmd">cogit invite 0xTeammate…</span> <span class="t-dim"># cogit1:… invite string</span></p>
+            <p><span class="t-prompt">$</span> <span class="t-cmd">cogit commit -m <span class="t-str">"Reports: Postgres + JSONB"</span> --kind decision</span></p>
+            <p><span class="t-prompt">$</span> <span class="t-cmd">cogit pull anurag</span> <span class="t-ok">→ 4 commits · 4 verified</span></p>
+          </div>
+        </div>
+      </div>
+      <div class="stack-strip" data-reveal style="--d:3">
+        <span class="chip mono">Arkiv — tiramisu testnet</span>
+        <span class="chip mono">XChaCha20-Poly1305</span>
+        <span class="chip mono">viem</span>
+        <span class="chip mono">MCP · stdio</span>
+        <span class="chip mono">Node 22</span>
+        <span class="chip mono">35 tests passing</span>
+      </div>
+      <p class="foot-small" data-reveal style="--d:4">Cogit — encrypted, wallet-signed team context on Arkiv. <span class="mono">docs: README · SPEC · MCP_SETUP</span></p>
+    </div>
+  </section>
+
+</main>
+
+<header class="deck-ui topbar"><div class="progress" id="progress"></div></header>
+
+<div class="deck-ui bottombar">
+  <div class="deck-left">
+    <span class="deck-brand">cogit</span>
+    <span class="deck-sep">/</span>
+    <span class="deck-title" id="deckTitle"></span>
+    <span class="deck-hint">← → navigate · F fullscreen · C hide chrome · P print</span>
+  </div>
+  <div class="deck-right">
+    <span class="counter" id="counter">01 / 13</span>
+    <button class="ctl" id="btnPrev" aria-label="Previous slide"><svg class="ic"><use href="#i-chev-l"/></svg></button>
+    <button class="ctl" id="btnNext" aria-label="Next slide"><svg class="ic"><use href="#i-chev-r"/></svg></button>
+    <button class="ctl" id="btnFs" aria-label="Toggle fullscreen"><svg class="ic"><use href="#i-expand"/></svg></button>
+  </div>
+</div>
+
+<script>
+(function () {
+  var stage = document.getElementById('stage');
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var counter = document.getElementById('counter');
+  var progress = document.getElementById('progress');
+  var deckTitle = document.getElementById('deckTitle');
+  var total = slides.length;
+  var current = 1;
+
+  var fromHash = parseInt((location.hash || '').replace('#', ''), 10);
+  if (fromHash >= 1 && fromHash <= total) current = fromHash;
+
+  function pad(n) { return String(n).length < 2 ? '0' + n : String(n); }
+
+  function render() {
+    slides.forEach(function (s, i) {
+      var active = i === current - 1;
+      s.classList.toggle('is-active', active);
+      if (active) {
+        s.querySelectorAll('[data-reveal]').forEach(function (el) {
+          el.style.animation = 'none';
+          void el.offsetHeight;
+          el.style.animation = '';
+        });
+      }
+    });
+    counter.textContent = pad(current) + ' / ' + pad(total);
+    progress.style.width = ((current / total) * 100).toFixed(2) + '%';
+    deckTitle.textContent = slides[current - 1].dataset.title || '';
+    var target = '#' + current;
+    if (location.hash !== target) {
+      try { history.replaceState(null, '', target); }
+      catch (e) { location.hash = String(current); }
+    }
+  }
+
+  function go(n) { current = Math.min(Math.max(n, 1), total); render(); }
+  function next() { go(current + 1); }
+  function prev() { go(current - 1); }
+
+  function fit() {
+    var s = Math.min(window.innerWidth / 1600, window.innerHeight / 900);
+    stage.style.transform = 'translate(-50%, -50%) scale(' + s + ')';
+  }
+
+  function toggleFullscreen() {
+    if (document.fullscreenElement) { document.exitFullscreen(); }
+    else if (document.documentElement.requestFullscreen) { document.documentElement.requestFullscreen(); }
+  }
+
+  document.addEventListener('keydown', function (e) {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    switch (e.key) {
+      case 'ArrowRight': case 'ArrowDown': case 'PageDown': case ' ': case 'n': case 'N':
+        e.preventDefault(); next(); break;
+      case 'ArrowLeft': case 'ArrowUp': case 'PageUp': case 'p': case 'P':
+        e.preventDefault(); prev(); break;
+      case 'Home': e.preventDefault(); go(1); break;
+      case 'End': e.preventDefault(); go(total); break;
+      case 'f': case 'F': e.preventDefault(); toggleFullscreen(); break;
+      case 'c': case 'C': document.body.classList.toggle('no-chrome'); break;
+    }
+  });
+
+  document.getElementById('btnPrev').addEventListener('click', prev);
+  document.getElementById('btnNext').addEventListener('click', next);
+  document.getElementById('btnFs').addEventListener('click', toggleFullscreen);
+
+  window.addEventListener('resize', fit);
+  fit();
+  render();
+})();
+</script>
+
+</body>
+</html>
