@@ -11,6 +11,8 @@
     "spike": "tsx scripts/spike.ts",
     "cogit": "tsx packages/cli/src/index.ts",
     "build": "node scripts/build.mjs",
+    "build:frontend": "node frontend/build.mjs",
+    "viewer": "node frontend/serve.mjs",
     "test": "vitest run"
   },
   "dependencies": {

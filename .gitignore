@@ -5,6 +5,7 @@ coverage/
 
 .env
 .cogit/
+.agents
 
 *.log
 .DS_Store
