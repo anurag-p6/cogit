@@ -1,0 +1,15 @@
+{
+  "name": "@cogit/core",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@arkiv-network/sdk": "0.8.1",
+    "@noble/ciphers": "2.4.0",
+    "@noble/hashes": "2.4.0",
+    "viem": "2.57.7"
+  }
+}
