@@ -1,6 +1,6 @@
 import { beforeAll, describe, expect, it } from "vitest";
 import { generatePrivateKey, privateKeyToAccount, type PrivateKeyAccount } from "viem/accounts";
-import { buildCommitEnvelope } from "../src/envelope.js";
+import { buildCommitEnvelope, parseCommitEnvelope } from "../src/envelope.js";
 import { decryptBody, newGroupKey, signCommitHash } from "../src/crypto.js";
 import { verifyEnvelope } from "../src/verify.js";
 import type { CommitBody, CommitEnvelope } from "../src/types.js";
@@ -26,6 +26,18 @@ beforeAll(async () => {
     body,
     groupKey,
     ts: 1760000000,
+  });
+});
+
+describe("parseCommitEnvelope", () => {
+  it("roundtrips a built envelope through JSON", () => {
+    expect(parseCommitEnvelope(JSON.stringify(valid))).toEqual(valid);
+  });
+
+  it("rejects nonsensical payloads", () => {
+    expect(() => parseCommitEnvelope("not json")).toThrow(/valid JSON/);
+    expect(() => parseCommitEnvelope('{"v":2}')).toThrow(/version/);
+    expect(() => parseCommitEnvelope(JSON.stringify({ ...valid, ts: "123" }))).toThrow(/ts/);
   });
 });
 

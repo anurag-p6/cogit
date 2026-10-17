@@ -9,6 +9,7 @@
   },
   "scripts": {
     "spike": "tsx scripts/spike.ts",
+    "cogit": "tsx packages/cli/src/index.ts",
     "test": "vitest run"
   },
   "dependencies": {

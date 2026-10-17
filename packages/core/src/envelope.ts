@@ -55,10 +55,13 @@ export function parseCommitEnvelope(payload: string): CommitEnvelope {
   if (e.v !== 1) {
     throw new Error(`unsupported commit envelope version: ${String(e.v)}`);
   }
-  for (const key of ["repoId", "branch", "author", "kind", "ts", "nonce", "ciphertext", "commitHash", "sig"] as const) {
+  for (const key of ["repoId", "branch", "author", "kind", "nonce", "ciphertext", "commitHash", "sig"] as const) {
     if (typeof e[key] !== "string") {
       throw new Error(`commit envelope field ${key} must be a string`);
     }
+  }
+  if (typeof e.ts !== "number" || !Number.isFinite(e.ts)) {
+    throw new Error("commit envelope field ts must be a finite number");
   }
   if (e.parent !== null && typeof e.parent !== "string") {
     throw new Error("commit envelope field parent must be a string or null");

@@ -1,0 +1,16 @@
+{
+  "name": "@cogit/cli",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "cogit": "./src/bin.ts"
+  },
+  "dependencies": {
+    "@arkiv-network/sdk": "0.8.1",
+    "@cogit/core": "workspace:*",
+    "commander": "15.0.0",
+    "dotenv": "18.0.8",
+    "viem": "2.57.7"
+  }
+}

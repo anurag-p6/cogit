@@ -66,7 +66,7 @@ export async function createBranch(
     repo_id: input.repoId,
     name: input.name,
     owner: addr(input.owner as Address),
-    head: input.head,
+    ...(input.head ? { head: input.head } : {}),
     ...(input.forkedFrom ? { forked_from: input.forkedFrom } : {}),
   };
   const { entityKey } = await wallet.createEntity({
@@ -141,11 +141,12 @@ export async function findBranch(
     return null;
   }
   const forkedFrom = attrValue(entity, "forked_from");
+  const head = attrValue(entity, "head");
   return {
     key: entity.key,
     name: String(attrValue(entity, "name")),
     owner: String(attrValue(entity, "owner")),
-    head: String(attrValue(entity, "head")),
+    head: typeof head === "string" ? head : "",
     forkedFrom: typeof forkedFrom === "string" ? forkedFrom : null,
   };
 }
