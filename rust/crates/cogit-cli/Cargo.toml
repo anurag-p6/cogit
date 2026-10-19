@@ -1,0 +1,33 @@
+[package]
+name = "cogit-cli"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Encrypted, wallet-signed team context on Arkiv"
+default-run = "cogit"
+
+[[bin]]
+name = "cogit"
+path = "src/main.rs"
+
+[dependencies]
+cogit-core = { path = "../cogit-core" }
+anyhow.workspace = true
+clap = { version = "4", features = ["derive"] }
+dotenvy.workspace = true
+getrandom.workspace = true
+hex.workspace = true
+tokio.workspace = true
+
+[package.metadata.deb]
+name = "cogit"
+maintainer = "Cogit <cogit@example.com>"
+copyright = "2026, Cogit contributors"
+license-file = ["../../LICENSE-RUST", "0"]
+depends = "$auto"
+section = "utils"
+priority = "optional"
+assets = [
+  ["target/release/cogit", "usr/bin/", "755"],
+  ["../../README.md", "usr/share/doc/cogit/README.md", "644"],
+]

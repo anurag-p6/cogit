@@ -1,0 +1,44 @@
+[workspace]
+members = ["crates/cogit-core", "crates/cogit-cli"]
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "GPL-3.0-or-later"
+repository = "https://github.com/cogit-dev/cogit"
+
+[workspace.dependencies]
+alloy = { version = "1.0.24", default-features = false, features = [
+  "providers",
+  "network",
+  "json-rpc",
+  "signer-local",
+  "sol-types",
+  "rpc-types",
+  "reqwest",
+] }
+arkiv-sdk = { git = "https://github.com/Arkiv-Network/arkiv-sdk-rust", rev = "93752767222e11926529b9b771d6cade7e0d9774", default-features = false, features = [
+  # FRICTION: 0.5.0 does not compile without `node-bindings` — `utils.rs`
+  # unconditionally references `reqwest`, which is an optional dep behind this
+  # feature. Upstream fix: `#[cfg(feature = "node-bindings")]` on
+  # `utils::generate_fee_history`. See docs/FRICTION_LOG_RUST.md (F-RS-04).
+  "node-bindings",
+  "pubsub",
+] }
+anyhow = "1"
+base64 = "0.22"
+chacha20poly1305 = "0.10"
+chrono = { version = "0.4", default-features = false, features = ["clock", "std"] }
+dotenvy = "0.15"
+getrandom = "0.3"
+hex = "0.4"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sha2 = "0.10"
+thiserror = "2"
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+
+[profile.release]
+strip = true
+lto = "thin"
