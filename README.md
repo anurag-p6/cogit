@@ -4,6 +4,7 @@
 
 ![tests](https://img.shields.io/badge/tests-35%20passing-brightgreen)
 ![node](https://img.shields.io/badge/node-%E2%89%A522-339933?logo=node.js&logoColor=white)
+![rust](https://img.shields.io/badge/also%20in-rust-orange?logo=rust&logoColor=white)
 ![MCP](https://img.shields.io/badge/MCP-stdio-blueviolet)
 ![Arkiv](https://img.shields.io/badge/Arkiv-tiramisu%20testnet-6E56CF)
 ![pnpm](https://img.shields.io/badge/monorepo-pnpm-F69220?logo=pnpm&logoColor=white)
@@ -176,10 +177,25 @@ The CLI builds to a single dependency-free file and can be installed like any to
 pnpm build
 cd packages/cli && pnpm pack --pack-destination /tmp   # cogit-cli-0.1.0.tgz (~200 KB)
 npm install -g /tmp/cogit-cli-0.1.0.tgz
+cogit          # first run prints the welcome screen
 cogit --version
 ```
 
-(The same flow is what an npm publish or a Snap Store release wraps.)
+Running `cogit` with no arguments prints a welcome banner — logo, one-liner, and quick start. npm backgrounds install scripts by default; to see the install-time note live, use `npm install -g --foreground-scripts …`.
+
+Once published, the same flow is `npm install -g @cogit/cli`, and a Snap Store release wraps the same bundle.
+
+## Native Rust CLI
+
+The same CLI is also a native Rust binary — same protocol, same on-chain data, same output (byte-identical `welcome` and `log`), verified cross-stack on Tiramisu: a Rust-written commit pulls clean in the TS CLI and vice versa. Install it with one line:
+
+```bash
+curl -fsSL https://github.com/anurag-p6/cogit/releases/latest/download/install.sh | bash
+```
+
+Installs `cogit` to `~/.cogit/bin` and wires up `$PATH` (options: `--version 0.1.0`, `--binary <path>`, `--no-modify-path`; downloads are SHA256-verified). Prefer a package? `cogit_0.1.0-1_amd64.deb` and `cogit-linux-x64.tar.gz` ship on the [release page](https://github.com/anurag-p6/cogit/releases/latest).
+
+The port needed a raw `execute((uint8,bytes)[])` encoder because the upstream SDK write path currently mines transactions that emit no entities — all twelve findings, each reproducible, are in [docs/FRICTION_LOG_RUST.md](docs/FRICTION_LOG_RUST.md).
 
 ## Repository layout
 
@@ -189,9 +205,14 @@ packages/
   cli/      `cogit` — the 8 commands above
   mcp/      `cogit-mcp` — context_commit / context_pull / context_log
   viewer/   static React site (M4, in progress)
+rust/
+  crates/cogit-core/   protocol port: raw tx encoder, crypto, verification
+  crates/cogit-cli/    native `cogit` binary
+  install.sh           one-liner installer (release assets)
 docs/
   ARKIV_NOTES.md    spike-proven API names, units, limits
   FRICTION_LOG.md   8 logged surprises (each reproducible)
+  FRICTION_LOG_RUST.md  12 findings from the Rust port
   MCP_SETUP.md      per-client agent setup
 scripts/
   spike.ts          M0 on-chain self-test (7 checks)
@@ -229,12 +250,14 @@ scripts/
 | M3 | `mcp` | **done** | 2 real agents: commit → pull → follow |
 | M4 | `viewer` | in progress | branch graph, commit list, decrypted detail, 5s refresh |
 | M5 | seed + docs | planned | `scripts/seed.ts`, fresh-clone demo in <10 min |
+| M6 | Rust port (core + CLI) | **done** | 6 unit tests · bidirectional cross-tool E2E · signed release + `curl \| bash` installer |
 
 ## Documentation
 
 - [SPEC.md](SPEC.md) — scope, data model, milestones
 - [docs/ARKIV_NOTES.md](docs/ARKIV_NOTES.md) — spike-proven API surface
 - [docs/FRICTION_LOG.md](docs/FRICTION_LOG.md) — every surprise, reproducibly
+- [docs/FRICTION_LOG_RUST.md](docs/FRICTION_LOG_RUST.md) — Rust port findings (raw encoder, sol! workarounds)
 - [docs/MCP_SETUP.md](docs/MCP_SETUP.md) — agent setup, verified scenario
 
 ## Development

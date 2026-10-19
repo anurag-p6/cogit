@@ -29,5 +29,5 @@ section = "utils"
 priority = "optional"
 assets = [
   ["target/release/cogit", "usr/bin/", "755"],
-  ["../../README.md", "usr/share/doc/cogit/README.md", "644"],
+  ["../../../README.md", "usr/share/doc/cogit/README.md", "644"],
 ]
