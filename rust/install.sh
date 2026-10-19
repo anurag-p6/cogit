@@ -250,6 +250,14 @@ install_from_binary() {
     cp "$binary_path" "$INSTALL_DIR/$APP"
     chmod 755 "$INSTALL_DIR/$APP"
     specific_version=$("$INSTALL_DIR/$APP" --version 2>/dev/null || echo "dev")
+
+    local mcp_binary
+    mcp_binary="$(dirname "$binary_path")/cogit-mcp"
+    if [ -f "$mcp_binary" ]; then
+        cp "$mcp_binary" "$INSTALL_DIR/cogit-mcp"
+        chmod 755 "$INSTALL_DIR/cogit-mcp"
+        print_message info "${MUTED}Also installed ${NC}cogit-mcp${MUTED} (MCP server for agents)${NC}"
+    fi
 }
 
 download_and_install() {
@@ -263,6 +271,11 @@ download_and_install() {
     tar -xzf "$tmp_dir/$filename" -C "$tmp_dir"
     mv "$tmp_dir/$APP" "$INSTALL_DIR/$APP"
     chmod 755 "$INSTALL_DIR/$APP"
+    if [ -f "$tmp_dir/cogit-mcp" ]; then
+        mv "$tmp_dir/cogit-mcp" "$INSTALL_DIR/cogit-mcp"
+        chmod 755 "$INSTALL_DIR/cogit-mcp"
+        print_message info "${MUTED}Also installed ${NC}cogit-mcp${MUTED} (MCP server for agents)${NC}"
+    fi
     rm -rf "$tmp_dir"
 }
 
@@ -413,6 +426,7 @@ echo -e "cd <project>           ${MUTED}# any project directory${NC}"
 echo -e "$APP init <name>       ${MUTED}# create a repo + group key${NC}"
 echo -e "$APP commit -m \"…\"     ${MUTED}# record encrypted context${NC}"
 echo -e "$APP pull <branch>     ${MUTED}# verified context for agents${NC}"
+echo -e "cogit-mcp              ${MUTED}# MCP server (stdio) for Claude Code, Cursor, …${NC}"
 echo -e ""
 echo -e "${MUTED}Docs: ${NC}https://github.com/$REPO"
 echo -e ""
