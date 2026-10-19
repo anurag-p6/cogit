@@ -15,6 +15,7 @@ export default function Footer() {
           </p>
         </div>
         <nav className="footer-nav" aria-label="Footer">
+          <a href="#privacy">Privacy</a>
           <a href="#viewer">Viewer</a>
           <a href="#pipeline">Pipeline</a>
           <a href="#features">Features</a>

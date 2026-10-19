@@ -10,6 +10,7 @@ export default function Nav() {
           <span className="brand-sub">on arkiv</span>
         </a>
         <nav className="nav-links" aria-label="Sections">
+          <a href="#privacy">Privacy</a>
           <a href="#viewer">Viewer</a>
           <a href="#pipeline">Pipeline</a>
           <a href="#features">Features</a>

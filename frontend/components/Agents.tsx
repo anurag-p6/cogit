@@ -20,7 +20,7 @@ export default function Agents() {
       <div className="wrap">
         <div className="section-head" data-reveal>
           <div>
-            <p className="eyebrow">04 — Agents</p>
+            <p className="eyebrow">05 — Agents</p>
             <h2 className="h2">Give your agent the tool.</h2>
           </div>
           <p className="section-note">

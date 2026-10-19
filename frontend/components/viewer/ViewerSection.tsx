@@ -279,7 +279,7 @@ export default function ViewerSection() {
       <div className="wrap">
         <div className="section-head" data-reveal>
           <div>
-            <p className="eyebrow">01 — Viewer</p>
+            <p className="eyebrow">02 — Viewer</p>
             <h2 className="h2">Branches, not Slack threads.</h2>
           </div>
           <p className="section-note">

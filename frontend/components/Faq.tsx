@@ -66,7 +66,7 @@ export default function Faq() {
     <section className="section faq" id="faq">
       <div className="wrap wrap-narrow">
         <div className="section-head section-head-stack" data-reveal>
-          <p className="eyebrow">06 — Questions</p>
+          <p className="eyebrow">07 — Questions</p>
           <h2 className="h2">Asked often, answered plainly.</h2>
         </div>
 

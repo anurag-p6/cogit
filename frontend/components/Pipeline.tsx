@@ -59,7 +59,7 @@ export default function Pipeline() {
       <div className="wrap">
         <div className="section-head" data-reveal>
           <div>
-            <p className="eyebrow">02 — Pipeline</p>
+            <p className="eyebrow">03 — Pipeline</p>
             <h2 className="h2">How a commit moves.</h2>
           </div>
           <p className="section-note">

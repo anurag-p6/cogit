@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import Hero from "@/components/Hero";
 import Nav from "@/components/Nav";
 import Pipeline from "@/components/Pipeline";
+import PrivacyStage from "@/components/PrivacyStage";
 import ViewerSection from "@/components/viewer/ViewerSection";
 
 export default function Page() {
@@ -14,6 +15,7 @@ export default function Page() {
       <Nav />
       <main>
         <Hero />
+        <PrivacyStage />
         <ViewerSection />
         <Pipeline />
         <Features />

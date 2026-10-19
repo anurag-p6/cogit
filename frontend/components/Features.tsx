@@ -52,7 +52,7 @@ export default function Features() {
       <div className="wrap">
         <div className="section-head" data-reveal>
           <div>
-            <p className="eyebrow">03 — Features</p>
+            <p className="eyebrow">04 — Features</p>
             <h2 className="h2">Three features, nothing else.</h2>
           </div>
           <p className="section-note">

@@ -65,7 +65,7 @@ export default function CliSection() {
       <div className="wrap">
         <div className="section-head" data-reveal>
           <div>
-            <p className="eyebrow">05 — CLI</p>
+            <p className="eyebrow">06 — CLI</p>
             <h2 className="h2">The whole CLI.</h2>
           </div>
           <p className="section-note">
