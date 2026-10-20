@@ -74,8 +74,8 @@ export default function CommitList({
               <span className="crow-summary">
                 {summary ??
                   (invalid
-                    ? "Body sealed — verification failed"
-                    : "Body sealed — group key required")}
+                    ? "Body sealed: verification failed"
+                    : "Body sealed: group key required")}
               </span>
               <span className="crow-line3 mono">
                 {authorLabel !== null ? `${authorLabel} · ` : ""}

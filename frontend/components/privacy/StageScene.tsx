@@ -34,7 +34,7 @@ export default function StageScene({ privacy, phase, daysLeft }: StageSceneProps
         <div className="pnode">
           <span className="avatar av-anu mono">AN</span>
           <span className="pnode-copy">
-            <span className="pnode-name">you — anurag</span>
+            <span className="pnode-name">you · anurag</span>
             <span className="pnode-sub mono">wallet 0x7099…79C8</span>
           </span>
         </div>
@@ -88,7 +88,7 @@ export default function StageScene({ privacy, phase, daysLeft }: StageSceneProps
         <p className={sealed ? "pnote-body is-cipher" : "pnote-body"}>{body}</p>
         <div className="pnote-meta mono">
           {expired ? (
-            <span className="pnote-gone">expired — dropped by the network</span>
+            <span className="pnote-gone">expired · dropped by the network</span>
           ) : privacy === "on" ? (
             <>
               <Icon name="i-clock" className="ic ic-inline" />

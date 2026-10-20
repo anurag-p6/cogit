@@ -157,6 +157,18 @@ export default function IconSprite() {
           <path d="M13.25 2v3h-3" />
         </g>
       </symbol>
+      <symbol id="i-link" viewBox="0 0 16 16">
+        <g
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M6.6 9.4a3.1 3.1 0 0 0 4.4 0l2-2a3.1 3.1 0 0 0-4.4-4.4l-1.1 1.1" />
+          <path d="M9.4 6.6a3.1 3.1 0 0 0-4.4 0l-2 2a3.1 3.1 0 0 0 4.4 4.4l1.1-1.1" />
+        </g>
+      </symbol>
       <symbol id="i-doc" viewBox="0 0 16 16">
         <g
           fill="none"

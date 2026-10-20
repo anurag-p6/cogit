@@ -31,7 +31,10 @@ let client: PublicArkivClient | null = null;
 
 function getClient(): PublicArkivClient {
   if (client === null) {
-    client = createPublicClient({ chain: tiramisu, transport: http() }) as PublicArkivClient;
+    client = createPublicClient({
+      chain: tiramisu,
+      transport: http(process.env.NEXT_PUBLIC_ARKIV_RPC_URL),
+    }) as PublicArkivClient;
   }
   return client;
 }

@@ -74,8 +74,8 @@ export default function DetailPanel({ commit, repo, labels, timing }: Props) {
         {commit.body !== null
           ? commit.body.summary
           : invalid
-            ? "Body sealed — verification failed"
-            : "Body sealed — group key required"}
+            ? "Body sealed: verification failed"
+            : "Body sealed: group key required"}
       </h3>
       <p className="detail-time mono">
         {absTime(envelope.ts)}
@@ -129,7 +129,7 @@ export default function DetailPanel({ commit, repo, labels, timing }: Props) {
 
       {invalid ? (
         <p className="notice notice-bad">
-          {reasonLabel(commit.reason)} — {commit.detail ?? "verification failed"}. The body was
+          {reasonLabel(commit.reason)}: {commit.detail ?? "verification failed"}. The body was
           never decrypted.
         </p>
       ) : null}
@@ -151,7 +151,7 @@ export default function DetailPanel({ commit, repo, labels, timing }: Props) {
         <div className="proof-row">
           <span className="proof-key">parent</span>
           <span className="proof-val mono">
-            {envelope.parent === null ? "— root" : shortHex(envelope.parent, 10, 8)}
+            {envelope.parent === null ? "root" : shortHex(envelope.parent, 10, 8)}
           </span>
           {envelope.parent !== null ? (
             <CopyButton text={envelope.parent} label="Copy parent hash" />

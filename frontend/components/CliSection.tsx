@@ -22,7 +22,7 @@ const COMMANDS: Array<{ cmd: string; desc: React.ReactNode }> = [
   },
   {
     cmd: "cogit branch <name>",
-    desc: <>fork from the current head — every writer gets a branch</>,
+    desc: <>fork from the current head; every writer gets a branch</>,
   },
   {
     cmd: "cogit use <branch>",
@@ -65,7 +65,7 @@ export default function CliSection() {
       <div className="wrap">
         <div className="section-head" data-reveal>
           <div>
-            <p className="eyebrow">06 — CLI</p>
+            <p className="eyebrow">06 · CLI</p>
             <h2 className="h2">The whole CLI.</h2>
           </div>
           <p className="section-note">
@@ -105,7 +105,7 @@ export default function CliSection() {
                 <span className="t-dim">· expires in 90 d</span>
               </p>
               <p className="t-gap t-shell">
-                shell B · ritesh — different machine, different wallet
+                shell B · ritesh · different machine, different wallet
               </p>
               <p>
                 <span className="t-prompt">$</span> <span className="t-cmd">cogit pull main</span>

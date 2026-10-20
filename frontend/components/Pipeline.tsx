@@ -25,7 +25,7 @@ const STEPS = [
     title: "Hash",
     body: (
       <>
-        sha256 over the canonical JSON of the hash fields — sorted keys, no whitespace. Change one
+        sha256 over the canonical JSON of the hash fields: sorted keys, no whitespace. Change one
         byte of ciphertext and the hash moves.
       </>
     ),
@@ -45,7 +45,7 @@ const STEPS = [
     title: "Write",
     body: (
       <>
-        One Arkiv entity — payload plus public attributes — with an expiry set by kind. The branch
+        One Arkiv entity (payload plus public attributes) with an expiry set by kind. The branch
         head is patched to the new hash in the same breath.
       </>
     ),
@@ -59,11 +59,11 @@ export default function Pipeline() {
       <div className="wrap">
         <div className="section-head" data-reveal>
           <div>
-            <p className="eyebrow">03 — Pipeline</p>
+            <p className="eyebrow">03 · Pipeline</p>
             <h2 className="h2">How a commit moves.</h2>
           </div>
           <p className="section-note">
-            Five steps from a one-line note to an entity any member can pull — the same code path
+            Five steps from a one-line note to an entity any member can pull. The same code path
             runs in the CLI, the MCP server, and this page.
           </p>
         </div>
@@ -97,7 +97,7 @@ export default function Pipeline() {
                 <li>
                   <span className="gate mono">OWNER_MISMATCH</span>
                   <span className="gate-body">
-                    entity owner ≠ author — someone else&apos;s key wrote it
+                    entity owner ≠ author: someone else&apos;s key wrote it
                   </span>
                 </li>
                 <li>
@@ -121,7 +121,7 @@ export default function Pipeline() {
                 <span className="dot" />
                 <span className="dot" />
                 <span className="dot" />
-                <span className="term-title">verify — 4 checks</span>
+                <span className="term-title">verify · 4 checks</span>
               </div>
               <div className="term-body term-light">
                 <p>
@@ -142,7 +142,7 @@ export default function Pipeline() {
                 </p>
                 <p className="t-gap">
                   <span className="t-warn">×</span> revoked?  commit 0xd41b…f0c9 fails owner check{" "}
-                  <span className="t-dim">— shown red, not decrypted</span>
+                  <span className="t-dim">shown red, not decrypted</span>
                 </p>
               </div>
             </div>

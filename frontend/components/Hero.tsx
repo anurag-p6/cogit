@@ -11,7 +11,7 @@ export default function Hero() {
             Team memory for coding&nbsp;agents, kept like source&nbsp;history.
           </h1>
           <p className="lede">
-            Cogit commits short, encrypted context entries to Arkiv — from the CLI or straight out
+            Cogit commits short, encrypted context entries to Arkiv: from the CLI or straight out
             of your agent&apos;s tool loop. Teammates pull them verified, and stale notes expire on
             their own.
           </p>
@@ -38,7 +38,7 @@ export default function Hero() {
               <span className="dot" />
               <span className="dot" />
               <span className="dot" />
-              <span className="term-title">anurag@atlas — cogit</span>
+              <span className="term-title">anurag@atlas · cogit</span>
             </div>
             <div className="term-body">
               <p>
@@ -83,7 +83,7 @@ export default function Hero() {
             </div>
           </div>
           <p className="hero-term-note">
-            Every write is wallet-signed, encrypted, and given an expiry by kind — shown verbatim
+            Every write is wallet-signed, encrypted, and given an expiry by kind. Shown verbatim
             from a seeded <span className="mono">atlas-reports</span> run.
           </p>
         </div>

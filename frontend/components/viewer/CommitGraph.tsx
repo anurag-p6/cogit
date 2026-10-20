@@ -142,8 +142,8 @@ export default function CommitGraph({
           const title =
             commit?.body?.summary ??
             (node.invalid
-              ? "Body sealed — verification failed"
-              : "Body sealed — group key required");
+              ? "Body sealed: verification failed"
+              : "Body sealed: group key required");
           return (
             <g key={node.id}>
               {sel ? (
@@ -155,7 +155,7 @@ export default function CommitGraph({
                   setTip({
                     x: event.clientX,
                     y: event.clientY,
-                    text: `${node.kind} · ${timeAgo(node.ts, nowSeconds)} — ${title}`,
+                    text: `${node.kind} · ${timeAgo(node.ts, nowSeconds)} · ${title}`,
                   });
                 }}
                 onMouseMove={(event) => {

@@ -21,7 +21,7 @@ const WHY = [
     key: "queries",
     body: (
       <>
-        Attributes are public and queryable — find a repo&apos;s commits by{" "}
+        Attributes are public and queryable; find a repo&apos;s commits by{" "}
         <span className="mono">type, repo_id, branch, kind</span> without an indexer.
       </>
     ),
@@ -52,11 +52,11 @@ export default function Features() {
       <div className="wrap">
         <div className="section-head" data-reveal>
           <div>
-            <p className="eyebrow">04 — Features</p>
+            <p className="eyebrow">04 · Features</p>
             <h2 className="h2">Three features, nothing else.</h2>
           </div>
           <p className="section-note">
-            The whole build is scoped to upload, pull, and show — so the demo stays honest and the
+            The whole build is scoped to upload, pull, and show, so the demo stays honest and the
             tool stays small.
           </p>
         </div>
@@ -114,7 +114,7 @@ export default function Features() {
             </div>
             <h3 className="fcard-title display-sm">Teammates pull it verified.</h3>
             <p className="fcard-body">
-              Pull renders a branch&apos;s history as markdown, oldest first — invalid entries are
+              Pull renders a branch&apos;s history as markdown, oldest first. Invalid entries are
               counted and skipped, never handed on.
             </p>
             <div className="term term-tight">

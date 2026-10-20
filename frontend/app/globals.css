@@ -1,5 +1,5 @@
 /* ============================================================
-   cogit — premium utilitarian minimalism
+   cogit: premium utilitarian minimalism
    warm monochrome + muted pastels · editorial serif accents
    ============================================================ */
 
@@ -1611,6 +1611,118 @@ button {
   color: var(--faint);
 }
 
+.viewer-full-link {
+  color: var(--body);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: #d5d3cc;
+}
+
+.viewer-full-link:hover {
+  color: var(--ink);
+  text-decoration-color: var(--ink);
+}
+
+/* ---------- viewer page ---------- */
+
+.viewer-page {
+  min-height: 100dvh;
+}
+
+.viewer-page .viewer-page-section {
+  padding: 28px 0 56px;
+}
+
+.viewer-page .wrap {
+  max-width: 1480px;
+  padding: 0 24px;
+}
+
+.viewer-page .workbench {
+  min-height: 540px;
+}
+
+.viewer-page .wb-grid {
+  grid-template-columns: 260px minmax(0, 1fr) 340px;
+}
+
+.wb-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.wb-sealed {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 8px 18px;
+  border-bottom: 1px solid var(--line);
+  background: var(--yellow-bg);
+  color: var(--yellow-fg);
+  font-size: 11px;
+}
+
+.share {
+  position: relative;
+  flex: none;
+}
+
+.share-btn {
+  gap: 7px;
+}
+
+.share-btn .ic {
+  width: 14px;
+  height: 14px;
+}
+
+.share-pop {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  width: min(320px, calc(100vw - 36px));
+  padding: 6px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  box-shadow: 0 10px 28px rgba(17, 17, 17, 0.08);
+  z-index: 50;
+}
+
+.share-opt {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  text-align: left;
+  padding: 10px 11px;
+  border-radius: 7px;
+}
+
+.share-opt:hover:not(:disabled) {
+  background: var(--surface-3);
+}
+
+.share-opt:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.share-opt-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.share-opt-sub {
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
 /* ---------- pipeline ---------- */
 
 .pipe-grid {
@@ -2242,6 +2354,7 @@ button {
 }
 
 .pstage[data-privacy="on"][data-phase="cross"] .pkey {
+  --kpeak: min(32.3cqw, calc(50cqw - 100% - 34px));
   animation: key-bounce 1.2s cubic-bezier(0.33, 0.9, 0.35, 1) 0.75s both;
 }
 
@@ -2250,16 +2363,16 @@ button {
     transform: translateX(0);
   }
   42% {
-    transform: translateX(31.5cqw);
+    transform: translateX(calc(var(--kpeak) * 0.975));
   }
   56% {
-    transform: translateX(32.3cqw);
+    transform: translateX(var(--kpeak));
   }
   68% {
-    transform: translateX(26cqw);
+    transform: translateX(calc(var(--kpeak) * 0.805));
   }
   82% {
-    transform: translateX(31.8cqw);
+    transform: translateX(calc(var(--kpeak) * 0.984));
   }
   100% {
     transform: translateX(0);
@@ -2734,6 +2847,10 @@ button {
     grid-template-columns: 224px minmax(0, 1fr);
   }
 
+  .viewer-page .wb-grid {
+    grid-template-columns: 224px minmax(0, 1fr);
+  }
+
   .detail {
     grid-column: 1 / -1;
     border-left: none;
@@ -2881,6 +2998,18 @@ button {
     grid-template-columns: 1fr;
   }
 
+  .viewer-page .wb-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .viewer-page .viewer-page-section {
+    padding: 20px 0 40px;
+  }
+
+  .viewer-page .wrap {
+    padding: 0 18px;
+  }
+
   .rail {
     border-right: none;
     border-bottom: 1px solid var(--line);
@@ -2908,6 +3037,18 @@ button {
 
   .net-chip-id {
     display: none;
+  }
+
+  .wb-id {
+    display: none;
+  }
+
+  .wb-bar {
+    padding: 11px 14px;
+  }
+
+  .wb-right {
+    gap: 8px;
   }
 
   .detail-checks {

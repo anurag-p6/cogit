@@ -11,22 +11,22 @@ const RUNNING: PrivacyPhase[] = ["write", "cross", "pull", "count"];
 
 const CAPTIONS: Record<PrivacyMode, Record<PrivacyPhase, string>> = {
   on: {
-    idle: "sealed before it leaves your side — replay anytime",
-    write: "write — the body is sealed client-side with the repo group key",
-    cross: "share — the sealed envelope crosses over; the key stays home",
-    pull: "pull — agents verify authorship and read metadata, never the body",
-    count: "expiry — set in blocks at write time; this ring is the network's clock",
-    expired: "expired — the network dropped the entity. no cleanup job, no server",
+    idle: "sealed before it leaves your side · replay anytime",
+    write: "write · the body is sealed client-side with the repo group key",
+    cross: "share · the sealed envelope crosses over; the key stays home",
+    pull: "pull · agents verify authorship and read metadata, never the body",
+    count: "expiry · set in blocks at write time; this ring is the network's clock",
+    expired: "expired · the network dropped the entity. no cleanup job, no server",
     read: "…",
   },
   off: {
-    idle: "plaintext mode — flip the switch to compare",
-    write: "write — nothing is sealed; the body sits readable in the store",
-    cross: "share — plaintext crosses over; every tool it passes can read it",
-    pull: "pull — no key gate; any tool on any machine reads the full body",
-    count: "no expiry — plaintext lives as long as the store does",
+    idle: "plaintext mode · flip the switch to compare",
+    write: "write · nothing is sealed; the body sits readable in the store",
+    cross: "share · plaintext crosses over; every tool it passes can read it",
+    pull: "pull · no key gate; any tool on any machine reads the full body",
+    count: "no expiry · plaintext lives as long as the store does",
     expired: "…",
-    read: "read — any agent, any machine, forever. no key required",
+    read: "read · any agent, any machine, forever. no key required",
   },
 };
 
@@ -180,7 +180,7 @@ export default function PrivacyStage() {
       <div className="wrap">
         <div className="section-head" data-reveal>
           <div>
-            <p className="eyebrow">01 — Privacy</p>
+            <p className="eyebrow">01 · Privacy</p>
             <h2 className="h2">Agents share memory, never secrets.</h2>
           </div>
           <p className="section-note">
@@ -212,7 +212,7 @@ export default function PrivacyStage() {
               <span className="pswitch-copy">
                 <span className="pswitch-label">Full privacy</span>
                 <span className={`pswitch-state mono${privacy === "off" ? " is-off" : ""}`}>
-                  {privacy === "on" ? "on — sealed, key-gated" : "off — plaintext, no expiry"}
+                  {privacy === "on" ? "on · sealed, key-gated" : "off · plaintext, no expiry"}
                 </span>
               </span>
             </button>

@@ -1,7 +1,7 @@
 import CopyButton from "./CopyButton";
 import Icon from "./Icon";
 
-const SNIPPET = `## Cogit — team context memory
+const SNIPPET = `## Cogit: team context memory
 This project uses Cogit (MCP server \`cogit\`) as shared team memory on Arkiv.
 - After every decision, call context_commit (kind "decision" for real decisions).
 - Before starting work that a teammate may have specified or decided on,
@@ -20,12 +20,12 @@ export default function Agents() {
       <div className="wrap">
         <div className="section-head" data-reveal>
           <div>
-            <p className="eyebrow">05 — Agents</p>
+            <p className="eyebrow">05 · Agents</p>
             <h2 className="h2">Give your agent the tool.</h2>
           </div>
           <p className="section-note">
             The MCP server exposes three tools over stdio. Tool descriptions tell the agent when to
-            use them — commit after decisions, pull before dependent work.
+            use them: commit after decisions, pull before dependent work.
           </p>
         </div>
 
@@ -100,7 +100,7 @@ export default function Agents() {
               <div className="run-row">
                 <span className="run-who mono">agent</span>
                 <div className="run-msg">
-                  wrote <span className="mono">db/migrations/0001_create_reports.sql</span> —
+                  wrote <span className="mono">db/migrations/0001_create_reports.sql</span>,
                   matching the decision, no hints needed
                 </div>
               </div>

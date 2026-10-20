@@ -36,7 +36,7 @@ export default function BranchRail({
       : Math.max(0, Math.round((repo.expiresAtBlock - currentBlock) * blockDuration));
   const expiryLabel =
     expiry === null
-      ? "—"
+      ? "n/a"
       : expiry > 86400
         ? `in ${Math.round(expiry / 86400)} d`
         : `in ${Math.round(expiry / 3600)} h`;
@@ -90,7 +90,7 @@ export default function BranchRail({
           <dt>Owner</dt>
           <dd className="mono">
             {repo === null
-              ? "—"
+              ? "n/a"
               : `${labels[repo.owner.toLowerCase()] ?? shortAddress(repo.owner)} · ${shortAddress(repo.owner)}`}
           </dd>
         </div>
@@ -104,7 +104,7 @@ export default function BranchRail({
         </div>
         <div className="kv-row">
           <dt>Entity</dt>
-          <dd className="mono">{repo === null ? "—" : shortHex(repo.entityKey, 6, 4)}</dd>
+          <dd className="mono">{repo === null ? "n/a" : shortHex(repo.entityKey, 6, 4)}</dd>
         </div>
       </dl>
       <p className="rail-note">

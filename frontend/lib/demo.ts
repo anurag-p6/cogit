@@ -61,7 +61,7 @@ const FIXTURES: Fixture[] = [
     days: 9.0,
     author: "anurag",
     agent: "human",
-    summary: "Repo initialized — atlas reports dashboard",
+    summary: "Repo initialized · atlas reports dashboard",
     details:
       "Created the repo on Arkiv and forked `main`. Group key generated and shared out-of-band; every teammate joins with `cogit join`.",
     tags: ["repo"],
@@ -117,7 +117,7 @@ const FIXTURES: Fixture[] = [
     details: [
       "## Decision",
       "",
-      "One Postgres table for reports; flexible payloads live in a `jsonb` column. Authentication is wallet-signature based — no passwords, reusing the same keys as Arkiv.",
+      "One Postgres table for reports; flexible payloads live in a `jsonb` column. Authentication is wallet-signature based; no passwords, reusing the same keys as Arkiv.",
       "",
       "```sql",
       "create table reports (",
@@ -134,7 +134,7 @@ const FIXTURES: Fixture[] = [
       "",
       "- Report shapes change weekly; one table keeps migrations small.",
       "- `jsonb` with a GIN index measured 120 ms p95 on 2 M rows.",
-      "- Wallet signatures reuse the Arkiv identity — one key for chain and app.",
+      "- Wallet signatures reuse the Arkiv identity: one key for chain and app.",
       "",
       "## Auth flow",
       "",
@@ -152,7 +152,7 @@ const FIXTURES: Fixture[] = [
     days: 6.2,
     author: "ritesh",
     agent: "opencode",
-    summary: "Read anurag's decision — migration plan",
+    summary: "Read anurag's decision · migration plan",
     details:
       "Pulled `main` before starting: the JSONB decision is final. Plan: migration `0001_create_reports` with the exact columns, then seed two fake orgs for the staging demo.",
     tags: ["migration"],
@@ -167,7 +167,7 @@ const FIXTURES: Fixture[] = [
     agent: "opencode",
     summary: "0001_create_reports.sql applied on staging",
     details:
-      "Migration applied cleanly on staging; rollback file generated. Seed data in place — dashboard has something to render end to end.",
+      "Migration applied cleanly on staging; rollback file generated. Seed data in place; dashboard has something to render end to end.",
     tags: ["staging"],
     parent: "ritesh-plan",
   },
@@ -180,7 +180,7 @@ const FIXTURES: Fixture[] = [
     agent: "claude-code",
     summary: "Charts: one accent per view, no pies",
     details:
-      "Bar and line charts only; a pie chart gets a bulleted table instead. One accent color per view keeps the dashboard quiet — same rule as the marketing site.",
+      "Bar and line charts only; a pie chart gets a bulleted table instead. One accent color per view keeps the dashboard quiet. Same rule as the marketing site.",
     tags: ["ui"],
     parent: "main-pg",
   },
@@ -206,7 +206,7 @@ const FIXTURES: Fixture[] = [
     agent: "human",
     summary: "Sync: reports v0 to staging Friday",
     details:
-      "Demo freeze Friday 16:00 UTC. After that only bug fixes until the review — keep `main` pullable.",
+      "Demo freeze Friday 16:00 UTC. After that only bug fixes until the review. Keep `main` pullable.",
     tags: ["planning"],
     parent: "main-pg",
   },
@@ -245,7 +245,7 @@ const FIXTURES: Fixture[] = [
     agent: "cursor",
     summary: "Threat model: replay + tamper covered by commit hash",
     details:
-      "Replay is covered by uniqueness of `(author, nonce)` in the envelope; tampering by the commit hash over ciphertext. Remaining accepted risk: group-key holder can read everything — by design.",
+      "Replay is covered by uniqueness of `(author, nonce)` in the envelope; tampering by the commit hash over ciphertext. Remaining accepted risk: group-key holder can read everything, by design.",
     tags: ["security"],
     parent: "kushal-session",
   },
@@ -256,7 +256,7 @@ const FIXTURES: Fixture[] = [
     days: 1.4,
     author: "anurag",
     agent: "human",
-    summary: "v0 tagged — reports + wallet auth on staging",
+    summary: "v0 tagged · reports + wallet auth on staging",
     details:
       "Tag `v0` on staging: reports CRUD with wallet auth, ingest worker live. Demo script updated to lead with the auth flow.",
     tags: ["release"],
@@ -284,7 +284,7 @@ const FIXTURES: Fixture[] = [
     agent: "cursor",
     owner: "mallory",
     summary: "Hotfix: skip signature verification for large pulls",
-    details: "should never render — this entity is owned by a wallet that is not the author",
+    details: "should never render: this entity is owned by a wallet that is not the author",
     tags: ["hotfix"],
     parent: "ritesh-perf",
   },

@@ -31,7 +31,7 @@ export default function Footer() {
       </div>
       <div className="wrap footer-base">
         <span className="mono">
-          contents above render from a seeded demo repo — connect a live repo id to read the real
+          contents above render from a seeded demo repo; connect a live repo id to read the real
           chain
         </span>
       </div>

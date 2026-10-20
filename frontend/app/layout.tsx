@@ -23,7 +23,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Cogit — encrypted team context on Arkiv",
+  title: "Cogit: encrypted team context on Arkiv",
   description:
     "Cogit commits short, encrypted, wallet-signed context entries to Arkiv. Teammates and their agents pull them verified; stale notes expire on their own.",
 };
