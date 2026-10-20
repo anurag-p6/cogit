@@ -290,9 +290,9 @@ The Rust workspace (`rust/`) is **GPL-3.0-or-later** because it links the GPL-3.
 
 - [SPEC.md](SPEC.md) — scope, data model, milestones
 - [docs/ARKIV_NOTES.md](docs/ARKIV_NOTES.md) — spike-proven API surface
-- [docs/FRICTION_LOG.md](docs/FRICTION_LOG.md) — every surprise, reproducibly
-- [docs/FRICTION_LOG_RUST.md](docs/FRICTION_LOG_RUST.md) — Rust port findings (raw encoder, sol! workarounds, MCP schema/error parity)
-- [arkiv/friction.md](arkiv/friction.md) — unified public friction log (served at `/arkiv/friction.md`)
+- [arkiv/friction.md](arkiv/friction.md) — consolidated public friction log (served at `/arkiv/friction.md`)
+- [docs/FRICTION_LOG.md](docs/FRICTION_LOG.md) — TypeScript sprint findings, chronological
+- [docs/FRICTION_LOG_RUST.md](docs/FRICTION_LOG_RUST.md) — Rust port findings, chronological
 - [arkiv/schema.md](arkiv/schema.md) — complete on-chain entity schema (served at `/arkiv/schema.md`)
 - [docs/MCP_SETUP.md](docs/MCP_SETUP.md) — agent setup, verified scenario
 
