@@ -1,10 +1,12 @@
 # MCP_SETUP.md — M3 agent setup
 
 > `@modelcontextprotocol/sdk@1.32.1`, stdio transport. Tested end-to-end with two real agents (opencode): Agent A committed a decision, Agent B — asked only "write the DB schema for the reports page" — pulled A's branch, followed it, and recorded its own work.
+>
+> A native Rust server, `cogit-mcp`, exposes the identical three tools with byte-equal `tools/list` schemas and tool results (40/40 parity checks vs the TS server, same MCP SDK client). Either server works everywhere below; `packages/mcp` is the reference implementation.
 
 The server runs **inside a cogit project** (a directory with `.cogit/config.json`, made by `cogit init`/`cogit join`). It reads `PRIVATE_KEY` from its environment or a `.env` in its working directory.
 
-Build the standalone servers once after cloning (`pnpm build` → `packages/cli/dist/index.js` = `cogit`, `packages/mcp/dist/index.js` = `cogit-mcp`; both are single-file bundles with no runtime dependencies beyond Node 22).
+Build the standalone servers once after cloning (`pnpm build` → `packages/cli/dist/index.js` = `cogit`, `packages/mcp/dist/index.js` = `cogit-mcp`; both are single-file bundles with no runtime dependencies beyond Node 22). The Rust `cogit-mcp` needs no build: the [installer](../README.md#native-rust-cli) puts it on your `$PATH` next to `cogit`.
 
 ## Tools
 
@@ -15,6 +17,27 @@ Build the standalone servers once after cloning (`pnpm build` → `packages/cli/
 | `context_log` | `branch?`, `n?` | list recent commits with verified/invalid status |
 
 Branch heads are single-writer on Arkiv: a teammate's wallet can commit only to its **own** branch. Each person gets a branch (`cogit branch <name> && cogit use <name>`); everyone pulls the others'.
+
+## Native server (`cogit-mcp`, Rust)
+
+```bash
+curl -fsSL https://github.com/anurag-p6/cogit/releases/latest/download/install.sh | bash   # installs cogit + cogit-mcp
+claude mcp add cogit -- cogit-mcp            # or point any client at `cogit-mcp`
+```
+
+```json
+{
+  "mcpServers": {
+    "cogit": {
+      "command": "cogit-mcp",
+      "cwd": "<your-project>",
+      "env": { "PRIVATE_KEY": "0x…" }
+    }
+  }
+}
+```
+
+Same tool surface, same outputs, same error shapes. Parity is enforced by an E2E suite (`rust/scripts/mcp-e2e.mjs`) that drives both servers with the TypeScript MCP SDK client and diffs everything byte-for-byte.
 
 ## Claude Code
 

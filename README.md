@@ -9,13 +9,17 @@
 ![Arkiv](https://img.shields.io/badge/Arkiv-tiramisu%20testnet-6E56CF)
 ![pnpm](https://img.shields.io/badge/monorepo-pnpm-F69220?logo=pnpm&logoColor=white)
 
-Every coding session ends, and so does everything the agent learned. Teammates re-explain the same decisions, agents re-derive the same schema, and "why did we do this?" reaches back into a chat log nobody reads.
+## The problem
 
-Cogit gives a team one durable place for context that agents read and write on their own:
+Every coding session ends, and so does everything the agent learned. Teammates re-explain the same decisions, agents re-derive the same schema, and "why did we do this?" reaches back into a chat log nobody reads. Git records *what* changed, not the reasoning behind it — and `user.email` is a claim, not a proof.
 
-- **F1 — Commit context.** An agent (or human) records a short, encrypted, wallet-signed entry on its branch. It lives on Arkiv with an expiry that matches its importance.
-- **F2 — Pull it live.** A teammate's agent pulls a branch before starting related work — every entry verified, decrypted, and followed, without asking anyone for anything.
-- **F3 — See it.** A web page draws branches as a graph, lists commits, and shows decrypted context with its verification status.
+## The solution
+
+Cogit is one durable place for the context a team produces, written and read by agents:
+
+- **Commit context.** An agent (or human) records a short, encrypted, wallet-signed entry on its branch. It lives on Arkiv with an expiry that matches its importance.
+- **Pull it live.** A teammate's agent pulls a branch before starting related work — every entry verified, decrypted, and followed, without asking anyone.
+- **See and verify it.** One web page (or CLI) draws branches as a graph, lists commits, and shows decrypted context with a four-step verification result — in the browser, against chain state.
 
 ## Why not just git?
 
@@ -111,25 +115,34 @@ Expiry by kind: `scratch` 3d · `note` 14d · `decision` 90d · `milestone` 365d
 
 ## Quickstart
 
-```bash
-git clone <this-repo> && cd cogit
-pnpm install
-cp .env.example .env          # add a funded Tiramisu testnet PRIVATE_KEY
-pnpm test                     # 35 unit tests
-pnpm build                    # standalone bundles: cogit CLI + cogit-mcp
-```
-
-Then, in any project directory:
+### Install the CLI (Linux x64)
 
 ```bash
-pnpm cogit init team-brain                        # repo + main branch + group key (in .cogit/config.json, mode 600)
-pnpm cogit invite 0xTeammate…                     # adds them to members, prints a cogit1: invite
-# … teammate: cogit join cogit1:<repoId>:<groupKey>
-pnpm cogit branch anurag && pnpm cogit use anurag # each person owns their branch
-pnpm cogit commit -m "Postgres + JSONB for reports" --kind decision --details-file notes.md --tag db
-pnpm cogit pull anurag                            # verified markdown → .cogit/context/anurag.md + stdout
-pnpm cogit log                                    # verified / INVALID:<reason> per commit
+curl -fsSL https://github.com/anurag-p6/cogit/releases/latest/download/install.sh | bash
+cogit --version
 ```
+
+Installs `cogit` and `cogit-mcp` (the MCP server) to `~/.cogit/bin` and puts them on `$PATH`. A Debian package and a tarball ship on the [release page](https://github.com/anurag-p6/cogit/releases/latest).
+
+### A team in six commands
+
+```bash
+mkdir team-brain && cd team-brain
+cogit init team-brain                              # repo + main branch + group key
+cogit commit -m "Postgres + JSONB for reports" --kind decision --tag db
+cogit invite 0xTeammateAddress…                    # prints cogit1:<repoId>:<groupKey>
+
+# teammate — own machine, own wallet:
+cogit join 'cogit1:…'
+cogit branch ritesh && cogit use ritesh
+cogit commit -m "Live updates over SSE" --kind decision --tag frontend
+
+# back on either side:
+cogit log           # every commit, verified or INVALID:<reason>
+cogit pull ritesh   # verified markdown, decrypted locally
+```
+
+`cogit commit` writes to Arkiv immediately — `--details-file` is optional long-form markdown, and the MCP `context_commit` tool is the same write with the agent's own summary as the body.
 
 ```
 cogit init <name>          create a repo and write .cogit/config.json
@@ -144,7 +157,7 @@ cogit log [--branch]       commits with verification status
 
 ## For agents (MCP)
 
-`packages/mcp` is a stdio MCP server exposing three tools whose descriptions tell agents *when* to use them:
+`cogit-mcp` is a stdio MCP server (native Rust binary; the TypeScript reference implementation lives in `packages/mcp`) exposing three tools whose descriptions tell agents *when* to use them:
 
 | Tool | Input | When the agent calls it |
 |---|---|---|
@@ -157,7 +170,7 @@ cogit log [--branch]       commits with verification status
   "mcp": {
     "cogit": {
       "type": "local",
-      "command": ["node", "<repo>/packages/mcp/dist/index.js"]
+      "command": ["cogit-mcp"]
     }
   }
 }
@@ -169,9 +182,9 @@ Copy-paste configs for Claude Code, Cursor, and opencode — plus the `CLAUDE.md
 
 Agent A (wallet 1) committed a decision via MCP. Agent B (wallet 2, separate project), asked only *"write the DB schema for the reports page"*, called `context_pull("anurag")`, produced a schema matching the decision, and recorded its own entry on its branch. Both commits verified cross-wallet via `cogit log`.
 
-## Install as a package
+## Install from source (TypeScript bundle)
 
-The CLI builds to a single dependency-free file and can be installed like any tool:
+The reference CLI builds to a single dependency-free file and can be installed like any tool:
 
 ```bash
 pnpm build
@@ -183,8 +196,6 @@ cogit --version
 
 Running `cogit` with no arguments prints a welcome banner — logo, one-liner, and quick start. npm backgrounds install scripts by default; to see the install-time note live, use `npm install -g --foreground-scripts …`.
 
-Once published, the same flow is `npm install -g @cogit/cli`, and a Snap Store release wraps the same bundle.
-
 ## Native Rust CLI
 
 The same CLI is also a native Rust binary — same protocol, same on-chain data, same output (byte-identical `welcome` and `log`), verified cross-stack on Tiramisu: a Rust-written commit pulls clean in the TS CLI and vice versa. Install it with one line:
@@ -193,26 +204,41 @@ The same CLI is also a native Rust binary — same protocol, same on-chain data,
 curl -fsSL https://github.com/anurag-p6/cogit/releases/latest/download/install.sh | bash
 ```
 
-Installs `cogit` to `~/.cogit/bin` and wires up `$PATH` (options: `--version 0.1.0`, `--binary <path>`, `--no-modify-path`; downloads are SHA256-verified). Prefer a package? `cogit_0.1.0-1_amd64.deb` and `cogit-linux-x64.tar.gz` ship on the [release page](https://github.com/anurag-p6/cogit/releases/latest).
+Installs `cogit` and `cogit-mcp` (the MCP server) to `~/.cogit/bin` and wires up `$PATH` (options: `--version 0.1.0`, `--binary <path>`, `--no-modify-path`; downloads are SHA256-verified). Prefer a package? `cogit_0.1.0-1_amd64.deb` and `cogit-linux-x64.tar.gz` ship on the [release page](https://github.com/anurag-p6/cogit/releases/latest) — both contain both binaries.
 
-The port needed a raw `execute((uint8,bytes)[])` encoder because the upstream SDK write path currently mines transactions that emit no entities — all twelve findings, each reproducible, are in [docs/FRICTION_LOG_RUST.md](docs/FRICTION_LOG_RUST.md).
+The port needed a raw `execute((uint8,bytes)[])` encoder because the upstream SDK write path currently mines transactions that emit no entities — all fifteen findings, each reproducible, are in [docs/FRICTION_LOG_RUST.md](docs/FRICTION_LOG_RUST.md).
+
+## Viewer
+
+`frontend/` is a Next.js viewer whose data path runs fully client-side: open `/viewer`, or deep-link a repo with `/viewer?repo=<repo-id>` (keyless links show metadata and seal bodies). Paste a `cogit1:` invite (or a repo id + group key) in **Live · Arkiv** and it reads the repo straight from the chain, re-verifies every commit (hash, wallet signature, entity owner, membership) and decrypts bodies with the key: in memory, never sent anywhere. Opt-in share links keep the key in the URL fragment, never the query or the server. Links also carry `commit`, `branch`, `kind`, and `q`, so a filtered view is reproducible. Demo mode renders a seeded fixture with no network. Live mode needs an RPC URL for the browser (the public endpoint's anonymous budget is small):
+
+```bash
+# frontend/.env.local: NEXT_PUBLIC_ARKIV_RPC_URL=https://rpc.tiramisu.db-chain.testnet.arkiv.network/<key>
+pnpm build:frontend
+pnpm viewer            # http://localhost:4173/viewer
+```
+
+Deploy on Vercel with Root Directory `frontend`, Node 22, and `NEXT_PUBLIC_ARKIV_RPC_URL` set for Production and Preview. The legacy `/?repo=<repo-id>` link redirects to `/viewer`.
 
 ## Repository layout
 
 ```
+arkiv/      public schema + friction log (served at /arkiv/schema.md and /arkiv/friction.md)
+frontend/   Next.js site — demo dataset + live Arkiv viewer
 packages/
   core/     protocol: crypto, envelope, verification, Arkiv wrapper, ops, branch graph
   cli/      `cogit` — the 8 commands above
-  mcp/      `cogit-mcp` — context_commit / context_pull / context_log
-  viewer/   static React site (M4, in progress)
+  mcp/      TS reference MCP server
 rust/
   crates/cogit-core/   protocol port: raw tx encoder, crypto, verification
   crates/cogit-cli/    native `cogit` binary
+  crates/cogit-mcp/    native `cogit-mcp` MCP server (stdio)
+  scripts/mcp-e2e.mjs  both-servers parity E2E over the TS MCP SDK client
   install.sh           one-liner installer (release assets)
 docs/
   ARKIV_NOTES.md    spike-proven API names, units, limits
   FRICTION_LOG.md   8 logged surprises (each reproducible)
-  FRICTION_LOG_RUST.md  12 findings from the Rust port
+  FRICTION_LOG_RUST.md  15 findings from the Rust port (incl. MCP parity)
   MCP_SETUP.md      per-client agent setup
 scripts/
   spike.ts          M0 on-chain self-test (7 checks)
@@ -238,6 +264,7 @@ scripts/
 - Arkiv entity cap is **128 KiB including attributes**; `details` is truncated at 96 KiB with a marker.
 - Attribute names must be **lowercase** (`repo_id`, `commit_hash`), values ≤ 128 bytes.
 - Expiry granularity is one block (2s); writes return before mining — receipts are awaited where it matters.
+- The public RPC's anonymous query budget is small and shared; on `429 ANON_COST_LIMITED`, get a free key at [hub.arkiv.network](https://hub.arkiv.network/access-keys) and append it to the URL in `.env`: `ARKIV_RPC_URL=https://rpc.tiramisu.db-chain.testnet.arkiv.network/<key>` (works for both the TS and Rust stacks).
 - `.cogit/config.json` holds the group key (mode 600) and is gitignored; the viewer takes the key in memory only.
 
 ## Status
@@ -248,16 +275,25 @@ scripts/
 | M1 | `core` | **done** | `pnpm test` — 35 tests (hash, sign, crypto, every failure reason) |
 | M2 | `cli` | **done** | 2 wallets: commit on A, verified pull on B |
 | M3 | `mcp` | **done** | 2 real agents: commit → pull → follow |
-| M4 | `viewer` | in progress | branch graph, commit list, decrypted detail, 5s refresh |
-| M5 | seed + docs | planned | `scripts/seed.ts`, fresh-clone demo in <10 min |
+| M4 | `viewer` | **done** | live repo, 2 wallets / 3 verified commits: in-browser verify + decrypt, branch graph, 5 s refresh |
+| M5 | docs + demo fixtures | **done** | public `arkiv/schema.md` + `arkiv/friction.md`, seeded demo dataset in the viewer |
 | M6 | Rust port (core + CLI) | **done** | 6 unit tests · bidirectional cross-tool E2E · signed release + `curl \| bash` installer |
+| M7 | Rust MCP server | **done** | 40/40 parity checks vs TS server (byte-equal schemas, results, errors) · live Tiramisu commits via MCP SDK client |
+
+## License
+
+Everything outside `rust/` — the TypeScript packages, the frontend, and the docs — is **MIT**; see [LICENSE](LICENSE).
+
+The Rust workspace (`rust/`) is **GPL-3.0-or-later** because it links the GPL-3.0-or-later `arkiv-sdk` crate; the full text is in [`rust/LICENSE-RUST`](rust/LICENSE-RUST). Prebuilt `cogit` / `cogit-mcp` binaries from the releases page are therefore distributed under GPL-3.0-or-later.
 
 ## Documentation
 
 - [SPEC.md](SPEC.md) — scope, data model, milestones
 - [docs/ARKIV_NOTES.md](docs/ARKIV_NOTES.md) — spike-proven API surface
 - [docs/FRICTION_LOG.md](docs/FRICTION_LOG.md) — every surprise, reproducibly
-- [docs/FRICTION_LOG_RUST.md](docs/FRICTION_LOG_RUST.md) — Rust port findings (raw encoder, sol! workarounds)
+- [docs/FRICTION_LOG_RUST.md](docs/FRICTION_LOG_RUST.md) — Rust port findings (raw encoder, sol! workarounds, MCP schema/error parity)
+- [arkiv/friction.md](arkiv/friction.md) — unified public friction log (served at `/arkiv/friction.md`)
+- [arkiv/schema.md](arkiv/schema.md) — complete on-chain entity schema (served at `/arkiv/schema.md`)
 - [docs/MCP_SETUP.md](docs/MCP_SETUP.md) — agent setup, verified scenario
 
 ## Development

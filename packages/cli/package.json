@@ -1,15 +1,19 @@
 {
   "name": "@cogit/cli",
   "version": "0.1.0",
-  "private": true,
+  "license": "MIT",
   "type": "module",
   "description": "Encrypted, wallet-signed team context on Arkiv",
   "bin": {
     "cogit": "./dist/index.js"
   },
   "files": [
-    "dist"
+    "dist",
+    "postinstall.js"
   ],
+  "scripts": {
+    "postinstall": "node postinstall.js"
+  },
   "devDependencies": {
     "@arkiv-network/sdk": "0.8.1",
     "@cogit/core": "workspace:*",

@@ -93,7 +93,7 @@ Demo scenario: Anurag's agent commits "Postgres + JSONB for reports table; walle
 
 ## F3 — Website
 
-Static React, `/?repo=<repoId>`, group-key field (memory only), reads Arkiv directly, decrypts in browser, 5s auto-refresh. Header (name, members, network) → left rail (branch, owner, count, head, color) → center SVG graph (lane/branch, time order, fork line, kind shape, red = invalid, animate-in) → list + detail panel (markdown, kind/author/agent/time/block/expiry countdown/badge/explorer link). Clean, high-contrast, projector-readable.
+Next.js viewer (SSR shell, client-side data), `/viewer?repo=<repoId>&commit=&branch=&kind=&q=`, keyless share links plus opt-in key-in-fragment invites, group-key field (memory only), reads Arkiv directly, decrypts in browser, 5s auto-refresh. Header (name, members, network) → left rail (branch, owner, count, head, color) → center SVG graph (lane/branch, time order, fork line, kind shape, red = invalid, animate-in) → list + detail panel (markdown, kind/author/agent/time/block/expiry countdown/badge/explorer link). Clean, high-contrast, projector-readable.
 
 ## Seed
 

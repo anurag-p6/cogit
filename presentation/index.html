@@ -235,6 +235,105 @@ a{color:inherit;text-decoration:none}
 .cipher{font-family:var(--mono);font-size:13px;color:var(--faint);letter-spacing:.04em;background:var(--surface-3);border:1px solid var(--line);border-radius:6px;padding:8px 12px;word-break:break-all;line-height:1.7}
 .cipher b{color:var(--ink-2);font-weight:500}
 
+.tl{display:flex;flex-direction:column}
+.tl-row{display:grid;grid-template-columns:9px 92px minmax(0,1fr) auto;gap:14px;align-items:start;padding:15px 0;border-top:1px solid var(--line-soft)}
+.tl-row:first-child{border-top:none;padding-top:0}
+.tl-row:last-child{padding-bottom:0}
+.tl-dot{width:9px;height:9px;border-radius:50%;margin-top:5px}
+.tl-dot.blue{background:var(--blue-fg)}
+.tl-dot.green{background:var(--green-fg)}
+.tl-dot.yellow{background:var(--yellow-fg)}
+.tl-time{font-family:var(--mono);font-size:11.5px;color:var(--muted);line-height:1.65;padding-top:1px}
+.tl-time b{display:block;font-weight:500;color:var(--ink-2);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase}
+.tl-t{font-size:15.5px;font-weight:600;margin:0 0 4px;line-height:1.35}
+.tl-b{font-size:13.5px;line-height:1.55;color:var(--body);margin:0}
+.tl-b code{font-family:var(--mono);font-size:12px;background:var(--surface-3);border:1px solid var(--line);border-radius:4px;padding:0 5px;color:var(--ink-2)}
+.tl-x{align-self:center;font-family:var(--mono);font-size:10.5px;color:var(--red-fg);background:var(--red-bg);border:1px solid #f3d2d4;border-radius:999px;padding:4px 9px;white-space:nowrap}
+
+.stat-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.stat-row{display:flex;align-items:baseline;gap:13px;padding:13px 0;border-top:1px solid var(--line-soft)}
+.stat-row:first-child{border-top:none;padding-top:0}
+.stat-row:last-child{padding-bottom:0}
+.stat-n{font-family:var(--serif);font-size:30px;line-height:1;min-width:38px;letter-spacing:-.02em}
+.stat-t{font-size:13.5px;line-height:1.55;color:var(--body)}
+.stat-row.bad .stat-n,.stat-row.bad .stat-t{color:var(--red-fg)}
+
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.scene{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column}
+.scene-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 18px;border-bottom:1px solid var(--line);background:var(--surface-2)}
+.scene-head .ml{margin:0}
+.scene-badge{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;border-radius:999px;padding:4px 10px;white-space:nowrap}
+.scene-badge.on{background:var(--green-bg);color:var(--green-fg)}
+.scene-badge.off{background:var(--red-bg);color:var(--red-fg)}
+.scene-zone{padding:13px 18px 14px;border-top:1px solid var(--line-soft)}
+.scene-head+.scene-zone{border-top:none}
+.scene-label{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin:0 0 9px}
+.scene-team{display:flex;align-items:center;gap:10px}
+.scene-avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;font-weight:600;background:var(--gray-bg);color:var(--ink-2);border:1px solid var(--line);flex:none}
+.scene-who{display:flex;flex-direction:column;line-height:1.35;font-size:13px}
+.scene-who span{font-family:var(--mono);font-size:10.5px;color:var(--muted)}
+.scene-key{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--yellow-fg);background:var(--yellow-bg);border:1px solid rgba(149,100,0,.24);border-radius:6px;padding:5px 9px;white-space:nowrap}
+.scene-key.off{color:var(--muted);background:var(--surface-3);border-color:var(--line)}
+.scene-boundary{display:flex;align-items:center;gap:10px;padding:6px 18px;color:var(--faint)}
+.scene-boundary i{flex:1;border-top:1.5px dashed #e2e0da}
+.scene-boundary b{font-weight:400;font-size:10px;letter-spacing:.07em;text-transform:uppercase;font-family:var(--mono);white-space:nowrap}
+.scene-boundary.off{color:var(--red-fg)}
+.scene-boundary.off i{border-top-color:#e8c7c9}
+.scene-agents{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:9px}
+.scene-agent{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:10.5px;color:var(--body);border:1px solid var(--line);border-radius:999px;padding:3px 9px;background:var(--surface)}
+.scene-agent i{width:5px;height:5px;border-radius:50%;background:var(--green-fg)}
+.scene-note{background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:6px}
+.scene-note.leak{background:#fffafa;border-color:#f3d2d4}
+.scene-note-head{display:flex;align-items:center;justify-content:space-between;gap:10px;font-family:var(--mono);font-size:10.5px;color:var(--muted)}
+.scene-cipher{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin:0;letter-spacing:.03em}
+.scene-plain{font-size:12px;line-height:1.55;color:var(--ink-2);margin:0}
+.scene-meta{font-family:var(--mono);font-size:10.5px;color:var(--muted);margin:0;display:flex;align-items:center;gap:6px}
+.scene-meta.bad{color:var(--red-fg)}
+.scene-status{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;margin:10px 0 0;line-height:1.4}
+.scene-status .ic{width:12px;height:12px}
+.scene-status.ok{color:var(--green-fg)}
+.scene-status.bad{color:var(--red-fg)}
+
+.who-row{display:grid;grid-template-columns:1fr 1.1fr 1fr;gap:18px;align-items:stretch}
+.who{display:flex;flex-direction:column}
+.who-top{display:flex;align-items:center;gap:14px}
+.who-av{width:84px;height:84px;flex:none;border-radius:50%;overflow:hidden;border:1px solid var(--line);background:var(--surface-3)}
+.who-av svg{width:100%;height:100%;display:block}
+.who-name{font-size:17px;font-weight:600;letter-spacing:-.01em;margin:0;line-height:1.25}
+.who-role{font-size:12.5px;line-height:1.45;color:var(--muted);margin:3px 0 0}
+.who-quote{margin:15px 0 0;background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:11px 13px;font-size:13.5px;line-height:1.55;color:var(--ink-2)}
+.who-quote em{font-style:normal;color:var(--muted)}
+.who-tag{margin-top:auto;padding-top:14px;font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}
+.who-tag b{font-weight:500;color:var(--ink-2)}
+.who-tag.bad b{color:var(--red-fg)}
+.who-path{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:12px}
+.who-path span{font-family:var(--mono);font-size:9.5px;letter-spacing:.03em;border-radius:999px;padding:3px 8px;border:1px solid var(--line);background:var(--surface-2);color:var(--muted)}
+.who-path .ok{color:var(--green-fg);border-color:#d9e5dc;background:var(--green-bg)}
+.who-path .no{color:var(--red-fg);border-color:#f3d2d4;background:var(--red-bg)}
+.who-path .arr{font-family:var(--mono);font-size:10px;color:var(--faint);padding:0;border:none;background:none}
+.grp-stat{margin-top:11px;padding-top:10px;border-top:1px dashed var(--line);font-family:var(--mono);font-size:10px;letter-spacing:.03em;color:var(--muted)}
+.grp-stat b{color:var(--red-fg);font-weight:500}
+.grp-avs{display:flex;margin:2px 0 13px;padding-left:2px}
+.grp-av{width:54px;height:54px;border-radius:50%;overflow:hidden;border:2px solid var(--surface);box-shadow:0 0 0 1px var(--line);background:var(--surface-3);margin-left:-12px}
+.grp-av:first-child{margin-left:0}
+.grp-av svg{width:100%;height:100%;display:block}
+.grp-agents{display:flex;flex-wrap:wrap;gap:5px;margin-top:12px}
+.grp-agent{font-family:var(--mono);font-size:9.5px;color:var(--muted);background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:2px 7px}
+.memo-col{display:flex;flex-direction:column;justify-content:center}
+.memo-label{font-family:var(--mono);font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--faint);margin:0 0 8px}
+.memo{background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:13px 15px}
+.memo-head{display:flex;align-items:center;justify-content:space-between;gap:10px;font-family:var(--mono);font-size:10.5px;color:var(--muted)}
+.memo-badge{background:var(--red-bg);color:var(--red-fg);border-radius:999px;padding:3px 8px;font-family:var(--mono);font-size:9.5px;letter-spacing:.05em;text-transform:uppercase}
+.memo-lines{margin:10px 0 0;display:flex;flex-direction:column;gap:6px}
+.memo-lines p{margin:0;font-size:12.5px;line-height:1.5;color:var(--ink-2)}
+.memo-lines p:nth-child(n+2){color:var(--faint)}
+.memo-seal{display:flex;align-items:center;gap:6px;margin-top:11px;padding-top:10px;border-top:1px dashed var(--line);font-family:var(--mono);font-size:10px;color:var(--muted)}
+.memo-seal .ic{width:12px;height:12px}
+.memo-cut{display:flex;align-items:center;gap:8px;margin:15px 0 0;color:var(--red-fg)}
+.memo-cut i{flex:1;border-top:1.5px dashed #e8c7c9}
+.memo-cut b{display:flex;align-items:center;gap:5px;font-family:var(--mono);font-weight:400;font-size:10px;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap}
+.memo-cut .ic{width:12px;height:12px}
+
 .pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
 .pcard{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:20px 22px;display:flex;flex-direction:column}
 .pc-head{display:flex;align-items:center;gap:10px;margin-bottom:9px}
@@ -301,6 +400,35 @@ body.no-chrome .deck-ui{opacity:0;pointer-events:none}
   <symbol id="i-chev-l" viewBox="0 0 24 24"><path d="m14.5 6-6 6 6 6"/></symbol>
   <symbol id="i-chev-r" viewBox="0 0 24 24"><path d="m9.5 6 6 6-6 6"/></symbol>
   <symbol id="i-term" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="m8 10 3 3-3 3M13.5 16H16"/></symbol>
+  <symbol id="av-1" viewBox="0 0 100 100">
+    <rect width="100" height="100" fill="#eee8de"/>
+    <path d="M42 62h16v16H42z" fill="#e3bd9c"/>
+    <path d="M14 100c2-20 16-31 36-31s34 11 36 31" fill="#d8d1c5" stroke="#2b2926" stroke-width="2"/>
+    <circle cx="50" cy="44" r="21" fill="#e3bd9c" stroke="#2b2926" stroke-width="2"/>
+    <path d="M28 44c0-14 10-24 22-24s22 10 22 24c-5-7-12-10-22-10s-17 3-22 10Z" fill="#2b2926"/>
+    <path d="M41 46h.01M59 46h.01" stroke="#2b2926" stroke-width="3" stroke-linecap="round"/>
+    <path d="M45 54c1.6 1.8 3.2 2.6 5 2.6s3.4-.8 5-2.6" fill="none" stroke="#2b2926" stroke-width="2" stroke-linecap="round"/>
+  </symbol>
+  <symbol id="av-2" viewBox="0 0 100 100">
+    <rect width="100" height="100" fill="#ece9e1"/>
+    <path d="M42 62h16v16H42z" fill="#c98f68"/>
+    <path d="M14 100c2-20 16-31 36-31s34 11 36 31" fill="#ccd3ca" stroke="#2b2926" stroke-width="2"/>
+    <circle cx="50" cy="44" r="21" fill="#c98f68" stroke="#2b2926" stroke-width="2"/>
+    <path d="M29 43c0-14 9-24 21-24 8 0 15 4 19 11-4-2-8-2-12-1-9 2-15 8-15 16 0 2-1 4-3 4-4 1-7-2-10-6Z" fill="#1f1c19"/>
+    <circle cx="41" cy="47" r="5" fill="none" stroke="#2b2926" stroke-width="1.6"/>
+    <circle cx="59" cy="47" r="5" fill="none" stroke="#2b2926" stroke-width="1.6"/>
+    <path d="M46 47h8" stroke="#2b2926" stroke-width="1.6"/>
+    <path d="M45 55c1.6 1.6 3.2 2.4 5 2.4s3.4-.8 5-2.4" fill="none" stroke="#2b2926" stroke-width="2" stroke-linecap="round"/>
+  </symbol>
+  <symbol id="av-3" viewBox="0 0 100 100">
+    <rect width="100" height="100" fill="#ede8dd"/>
+    <path d="M42 62h16v16H42z" fill="#a9714f"/>
+    <path d="M14 100c2-20 16-31 36-31s34 11 36 31" fill="#d3cfc4" stroke="#2b2926" stroke-width="2"/>
+    <circle cx="50" cy="44" r="21" fill="#a9714f" stroke="#2b2926" stroke-width="2"/>
+    <path d="M29 45c-3-7-2-14 3-19 5-6 12-8 19-7 9 1 16 7 18 15 1 4 0 8-2 11-1-6-5-11-11-13-8-3-18-1-23 6-2 3-3 5-4 7Z" fill="#2a2724"/>
+    <path d="M41 46h.01M59 46h.01" stroke="#2b2926" stroke-width="3" stroke-linecap="round"/>
+    <path d="M45 54c1.6 1.8 3.2 2.6 5 2.6s3.4-.8 5-2.6" fill="none" stroke="#2b2926" stroke-width="2" stroke-linecap="round"/>
+  </symbol>
 </svg>
 
 <main id="stage">
@@ -315,7 +443,7 @@ body.no-chrome .deck-ui{opacity:0;pointer-events:none}
         <div class="badges" data-reveal style="--d:3">
           <span class="badge badge-priv">privacy track</span>
           <span class="badge badge-plain">MCP · stdio</span>
-          <span class="badge badge-plain">35 tests passing</span>
+          <span class="badge badge-plain">TS + Rust · one protocol</span>
         </div>
       </div>
       <div data-reveal style="--d:2">
@@ -345,43 +473,129 @@ body.no-chrome .deck-ui{opacity:0;pointer-events:none}
     </dl>
   </section>
 
-  <section class="slide" data-title="the problem">
+  <section class="slide" data-title="who feels this — ritesh">
     <header class="s-head">
-      <p class="eyebrow" data-reveal style="--d:0">01 — the problem</p>
-      <h2 class="h1" data-reveal style="--d:1">Every session ends. Everything the agent learned dies with it.</h2>
-      <p class="lede-tight" data-reveal style="--d:2">Context lives in the moment — and evaporates the second the window closes.</p>
+      <p class="eyebrow" data-reveal style="--d:0">01 — who feels this</p>
+      <h2 class="h1" data-reveal style="--d:1">Ritesh can clone the repo. He can't clone the context.</h2>
+      <p class="lede-tight" data-reveal style="--d:2">Ritesh from India builds with his friends and their agents. The discussion he needs already happened — in a session that closed weeks ago.</p>
     </header>
     <div class="s-body">
-      <div class="cols3">
-        <article class="card pad" data-reveal style="--d:3">
-          <div class="ic-head"><span class="num">01</span><svg class="ic"><use href="#i-users"/></svg></div>
-          <h3 class="ct">Teammates re-explain</h3>
-          <p class="cb">The same decisions and onboarding, every week. "What did we standardize on for pagination?" starts from zero, again.</p>
+      <div class="who-row">
+        <article class="card pad who" data-reveal style="--d:3">
+          <div class="who-top">
+            <span class="who-av"><svg viewBox="0 0 100 100" role="img" aria-label="Portrait of Ritesh"><use href="#av-1"/></svg></span>
+            <div>
+              <p class="who-name">Ritesh</p>
+              <p class="who-role">India · builds with his friends</p>
+            </div>
+          </div>
+          <p class="who-quote">“What did your agent decide for the reports table?” <em>— his agent wasn't in that session.</em></p>
+          <div class="who-path">
+            <span class="ok">clone ✓</span><span class="arr">→</span><span class="ok">read code ✓</span><span class="arr">→</span><span class="no">ask their agent ✗</span>
+          </div>
+          <p class="who-tag bad">has the repo · <b>missing the memory</b></p>
         </article>
-        <article class="card pad" data-reveal style="--d:4">
-          <div class="ic-head"><span class="num">02</span><svg class="ic"><use href="#i-term"/></svg></div>
-          <h3 class="ct">Agents re-derive</h3>
-          <p class="cb">A fresh session guesses architecture that was already settled — every agent, every teammate, every project, separately.</p>
-        </article>
-        <article class="card pad" data-reveal style="--d:5">
-          <div class="ic-head"><span class="num">03</span><svg class="ic"><use href="#i-chat"/></svg></div>
-          <h3 class="ct">"Why did we do this?"</h3>
-          <p class="cb">The answer exists somewhere in a chat log nobody reads — if it exists at all. Nothing expires on purpose; it just gets lost.</p>
+
+        <div class="memo-col" data-reveal style="--d:4">
+          <p class="memo-label">friends' agent memory</p>
+          <div class="memo">
+            <div class="memo-head"><span>agent session · 3 weeks ago</span><span class="memo-badge">closed</span></div>
+            <div class="memo-lines">
+              <p>“Postgres + JSONB for the reports table.”</p>
+              <p>“Branch heads are single-writer…”</p>
+              <p>“The Rust write path lives in arkiv_tx.rs…”</p>
+              <p>“Wallet signs locally; the key never travels…”</p>
+              <p>“Reports page: four endpoints, cursor pagination…”</p>
+            </div>
+            <p class="memo-seal"><svg class="ic"><use href="#i-lock"/></svg>sealed in the session · not queryable</p>
+          </div>
+          <div class="memo-cut"><i></i><b><svg class="ic"><use href="#i-x"/></svg>Ritesh can't ask a closed session</b><i></i></div>
+        </div>
+
+        <article class="card pad who" data-reveal style="--d:5">
+          <div class="grp-avs">
+            <span class="grp-av"><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#av-2"/></svg></span>
+            <span class="grp-av"><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#av-1"/></svg></span>
+            <span class="grp-av"><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#av-3"/></svg></span>
+          </div>
+          <p class="who-name">The group</p>
+          <p class="who-role">Anurag, Ritesh + friends · one repo</p>
+          <div class="grp-agents">
+            <span class="grp-agent">claude-code</span>
+            <span class="grp-agent">cursor</span>
+            <span class="grp-agent">opencode</span>
+          </div>
+          <p class="grp-stat">3 agents · 3 sessions · <b>0 shared memory</b></p>
+          <p class="who-tag">the answers exist · <b>nothing durable to hand over</b></p>
         </article>
       </div>
-      <p class="footline" data-reveal style="--d:6"><strong>The knowledge existed.</strong> It was never captured where the next session — human or agent — could find it.</p>
+      <p class="footline" data-reveal style="--d:6">Ritesh has the code and the access. What he can't get is the <strong>memory</strong> — so he re-asks, re-derives, and re-decides.</p>
     </div>
   </section>
 
-  <section class="slide" data-title="the privacy problem">
+  <section class="slide" data-title="the problem — as we lived it">
     <header class="s-head">
-      <p class="eyebrow" data-reveal style="--d:0">02 — the privacy problem</p>
-      <h2 class="h1" data-reveal style="--d:1">And when context is shared through chats, secrets leak with it.</h2>
+      <p class="eyebrow" data-reveal style="--d:0">02 — the problem, as we lived it</p>
+      <h2 class="h1" data-reveal style="--d:1">We built Cogit with coding agents. The agents kept forgetting the build.</h2>
+      <p class="lede-tight" data-reveal style="--d:2">Three agents, two stacks, dozens of sessions — every session started from zero.</p>
+    </header>
+    <div class="s-body">
+      <div class="cols2" style="grid-template-columns:1.45fr .55fr">
+        <div class="card pad" data-reveal style="--d:3">
+          <p class="ml">One week of building Cogit</p>
+          <div class="tl">
+            <div class="tl-row">
+              <span class="tl-dot blue"></span>
+              <span class="tl-time"><b>session 1</b>decision</span>
+              <div>
+                <p class="tl-t">Postgres + JSONB for the reports table.</p>
+                <p class="tl-b">An agent settles it, writes the migration, closes the session. The decision lives in that session — not with the team.</p>
+              </div>
+              <span class="tl-x">re-derived next session</span>
+            </div>
+            <div class="tl-row">
+              <span class="tl-dot yellow"></span>
+              <span class="tl-time"><b>session 2</b>rule</span>
+              <div>
+                <p class="tl-t">Branch heads are single-writer.</p>
+                <p class="tl-b">A teammate's agent commits to <code>main</code> → <code>NotOwner</code> (F-8), after the commit entity was already written. The rule had to be learned from a failed patch.</p>
+              </div>
+              <span class="tl-x">learned from a failed patch</span>
+            </div>
+            <div class="tl-row">
+              <span class="tl-dot green"></span>
+              <span class="tl-time"><b>session 3</b>fix</span>
+              <div>
+                <p class="tl-t">The Rust SDK's write path mined nothing.</p>
+                <p class="tl-b">Transactions succeeded with zero entities (F-RS-01). Solved with a hand-written 260-line encoder — and the next session still had to rediscover it.</p>
+              </div>
+              <span class="tl-x">solved by hand</span>
+            </div>
+          </div>
+        </div>
+        <div class="card pad" data-reveal style="--d:4">
+          <p class="ml">The loop, by the numbers</p>
+          <ul class="stat-list">
+            <li class="stat-row"><span class="stat-n">3</span><span class="stat-t">coding agents in the loop — claude-code, cursor, opencode</span></li>
+            <li class="stat-row"><span class="stat-n">2</span><span class="stat-t">stacks to keep in sync — TypeScript and Rust</span></li>
+            <li class="stat-row"><span class="stat-n">23</span><span class="stat-t">findings logged by hand — 8 TS, 15 Rust, each reproduced live</span></li>
+            <li class="stat-row bad"><span class="stat-n">0</span><span class="stat-t">reach the next session on their own</span></li>
+          </ul>
+        </div>
+      </div>
+      <p class="footline" data-reveal style="--d:5">The knowledge existed — in docs, in chat, in a closed session. <strong>Nowhere the next agent could query it.</strong></p>
+    </div>
+  </section>
+
+  <section class="slide" data-title="the privacy problem — as we lived it">
+    <header class="s-head">
+      <p class="eyebrow" data-reveal style="--d:0">03 — the privacy problem, as we lived it</p>
+      <h2 class="h1" data-reveal style="--d:1">And the context we shared by hand carried private keys into the chat.</h2>
     </header>
     <div class="s-body">
       <div class="cols2" style="grid-template-columns:1fr .92fr">
         <div class="card pad" data-reveal style="--d:2">
-          <p class="ml">#team-backend — 14:32</p>
+          <p class="ml">#team-backend — while wiring the demo</p>
           <div class="chat">
             <div class="msg">
               <span class="msg-name">ritesh</span>
@@ -389,37 +603,37 @@ body.no-chrome .deck-ui{opacity:0;pointer-events:none}
             </div>
             <div class="msg">
               <span class="msg-name">anurag</span>
-              <p class="msg-body">deploy bot hot wallet key <span class="secret">0x4f3a9c…81c2</span>, keep it between us</p>
+              <p class="msg-body">funded testnet key for the deploy bot: <span class="secret">pk 0x4f3a9c…81c2</span> — top it up if it runs dry</p>
             </div>
             <div class="msg">
               <span class="msg-name">ritesh</span>
-              <p class="msg-body">👍 also, we went <b>Postgres + JSONB</b> for the reports table — decided yesterday</p>
+              <p class="msg-body">also, <b>Postgres + JSONB</b> for the reports table — decided yesterday</p>
             </div>
           </div>
-          <p class="chat-note">indexed · retained indefinitely · mirrored to every device · one screenshot from public</p>
+          <p class="chat-note">indexed · retained · mirrored to every device · one screenshot from public</p>
         </div>
         <div data-reveal style="--d:3">
           <div class="leakrow">
             <svg class="ic"><use href="#i-x"/></svg>
-            <div><p class="leakrow-t">Plaintext by default</p><p class="leakrow-b">Every member, integration, and future export reads it — including the credentials.</p></div>
+            <div><p class="leakrow-t">Secrets travel with the context</p><p class="leakrow-b">The decision needed the key to be useful. The chat log kept both — and every device it synced to.</p></div>
           </div>
           <div class="leakrow">
             <svg class="ic"><use href="#i-x"/></svg>
-            <div><p class="leakrow-t">Permanent by default</p><p class="leakrow-b">Nothing expires, nothing is revocable. A pasted private key is a pasted private key forever.</p></div>
+            <div><p class="leakrow-t">Retention is not a policy</p><p class="leakrow-b">Nothing expires and nothing is revocable. A key pasted once is a key pasted forever.</p></div>
           </div>
           <div class="leakrow">
             <svg class="ic"><use href="#i-x"/></svg>
-            <div><p class="leakrow-t">Unprovable by nature</p><p class="leakrow-b">Anyone can paste a "decision". Nobody can prove who actually made it.</p></div>
+            <div><p class="leakrow-t">Proof is impossible</p><p class="leakrow-b">Anyone can paste a "decision". Nobody can prove who actually made it.</p></div>
           </div>
         </div>
       </div>
-      <p class="footline" data-reveal style="--d:4">Shared context should be readable by <strong>exactly the team</strong> — and signed by <strong>exactly its author</strong>. That is the bar Cogit is built to.</p>
+      <p class="footline" data-reveal style="--d:4">The context was real. <strong>The channel was wrong</strong> — and every teammate, agent, and screenshot inherited it.</p>
     </div>
   </section>
 
   <section class="slide" data-title="the gap">
     <header class="s-head">
-      <p class="eyebrow" data-reveal style="--d:0">03 — the gap</p>
+      <p class="eyebrow" data-reveal style="--d:0">04 — the gap</p>
       <h2 class="h1" data-reveal style="--d:1">Git proves the diff. Chat proves nothing. Neither hides anything.</h2>
     </header>
     <div class="s-body">
@@ -471,7 +685,7 @@ body.no-chrome .deck-ui{opacity:0;pointer-events:none}
 
   <section class="slide" data-title="the solution">
     <header class="s-head">
-      <p class="eyebrow" data-reveal style="--d:0">04 — the solution</p>
+      <p class="eyebrow" data-reveal style="--d:0">05 — the solution</p>
       <h2 class="h1" data-reveal style="--d:1">Cogit: one durable place for context that agents read and write on their own.</h2>
     </header>
     <div class="s-body">
@@ -511,16 +725,22 @@ body.no-chrome .deck-ui{opacity:0;pointer-events:none}
         </article>
         <article class="card pad-sm" data-reveal style="--d:5">
           <p class="ml ml-ic">F3 — view <svg class="ic"><use href="#i-node"/></svg></p>
-          <p class="cb">A page draws branches as a graph, lists commits, and shows decrypted context with verification status. The key never leaves the tab.</p>
+          <p class="cb">A live page draws branches as a graph, verifies and decrypts in the browser, and never sends the key anywhere.</p>
         </article>
       </div>
-      <p class="footline mono" data-reveal style="--d:6;font-size:13.5px;color:var(--muted)">MCP tools over stdio — context_commit · context_pull · context_log</p>
+      <div class="chip-row" data-reveal style="--d:6">
+        <span class="chip mono">cli · TS + Rust</span>
+        <span class="chip mono">mcp · 40/40 parity</span>
+        <span class="chip mono">viewer · live</span>
+        <span class="chip mono">install · one line</span>
+      </div>
+      <p class="footline mono" data-reveal style="--d:7;font-size:13px;color:var(--muted)">One protocol across both stacks — byte-identical CLI output and 40/40 MCP parity, verified on Tiramisu.</p>
     </div>
   </section>
 
   <section class="slide" data-title="how a commit moves">
     <header class="s-head">
-      <p class="eyebrow" data-reveal style="--d:0">05 — how a commit moves</p>
+      <p class="eyebrow" data-reveal style="--d:0">06 — how a commit moves</p>
       <h2 class="h1" data-reveal style="--d:1">Build, seal, hash, sign, write — in that order.</h2>
     </header>
     <div class="s-body">
@@ -567,7 +787,7 @@ body.no-chrome .deck-ui{opacity:0;pointer-events:none}
 
   <section class="slide" data-title="privacy architecture">
     <header class="s-head">
-      <p class="eyebrow" data-reveal style="--d:0">06 — privacy architecture</p>
+      <p class="eyebrow" data-reveal style="--d:0">07 — privacy architecture</p>
       <h2 class="h1" data-reveal style="--d:1">The ledger carries proof. It never carries plaintext.</h2>
     </header>
     <div class="s-body">
@@ -610,9 +830,81 @@ body.no-chrome .deck-ui{opacity:0;pointer-events:none}
     </div>
   </section>
 
+  <section class="slide" data-title="privacy — on vs off">
+    <header class="s-head">
+      <p class="eyebrow" data-reveal style="--d:0">08 — privacy, on vs off</p>
+      <h2 class="h1" data-reveal style="--d:1">Agents share memory, never secrets.</h2>
+      <p class="lede-tight" data-reveal style="--d:2">The same commit in two modes — this is the live privacy stage, frozen mid-share.</p>
+    </header>
+    <div class="s-body">
+      <div class="duo">
+        <div class="scene" data-reveal style="--d:3">
+          <div class="scene-head">
+            <span class="scene-badge on">on · sealed, key-gated</span>
+            <span class="ml">full privacy</span>
+          </div>
+          <div class="scene-zone">
+            <p class="scene-label">your side · key holders</p>
+            <div class="scene-team">
+              <span class="scene-avatar mono">AN</span>
+              <span class="scene-who"><b>you · anurag</b><span>wallet 0x225f…6af7</span></span>
+              <span class="scene-key">group key a7d3f9…</span>
+            </div>
+          </div>
+          <div class="scene-boundary"><i></i><b>the key never crosses this line</b><i></i></div>
+          <div class="scene-zone">
+            <p class="scene-label">agent side · ciphertext only</p>
+            <div class="scene-agents">
+              <span class="scene-agent"><i></i>claude-code</span>
+              <span class="scene-agent"><i></i>cursor</span>
+              <span class="scene-agent"><i></i>opencode</span>
+            </div>
+            <div class="scene-note">
+              <div class="scene-note-head"><span class="tag kind-decision">decision</span><span>anurag · main</span></div>
+              <p class="scene-cipher">9fCq · 412 B ciphertext · k2A=</p>
+              <p class="scene-meta">sealed · expires in 90 d · no key, no read</p>
+            </div>
+            <p class="scene-status ok"><svg class="ic"><use href="#i-check"/></svg>3 agents pulled · every signature verified</p>
+          </div>
+        </div>
+
+        <div class="scene" data-reveal style="--d:4">
+          <div class="scene-head">
+            <span class="scene-badge off">off · plaintext, no expiry</span>
+            <span class="ml">plaintext mode</span>
+          </div>
+          <div class="scene-zone">
+            <p class="scene-label">your side · team wallet</p>
+            <div class="scene-team">
+              <span class="scene-avatar mono" style="background:var(--red-bg);color:var(--red-fg)">AN</span>
+              <span class="scene-who"><b>you · anurag</b><span>wallet 0x225f…6af7</span></span>
+              <span class="scene-key off">key · not required</span>
+            </div>
+          </div>
+          <div class="scene-boundary off"><i></i><b>no boundary here</b><i></i></div>
+          <div class="scene-zone">
+            <p class="scene-label">agent side · full plaintext</p>
+            <div class="scene-agents">
+              <span class="scene-agent"><i></i>claude-code</span>
+              <span class="scene-agent"><i></i>cursor</span>
+              <span class="scene-agent"><i></i>opencode</span>
+            </div>
+            <div class="scene-note leak">
+              <div class="scene-note-head"><span class="tag kind-decision">decision</span><span>anurag · main</span></div>
+              <p class="scene-plain">Postgres + JSONB for reports; staging <span class="secret">postgres://reports:S3cret@db.stg</span>; bot key <span class="secret">pk 0x4f3a9c…81c2</span></p>
+              <p class="scene-meta bad">∞ no expiry · no seal</p>
+            </div>
+            <p class="scene-status bad"><svg class="ic"><use href="#i-x"/></svg>readable by any tool on any machine, forever</p>
+          </div>
+        </div>
+      </div>
+      <p class="footline" data-reveal style="--d:5">Same protocol, one switch: <strong>the key stays on your side</strong>, and the network expires what you no longer need.</p>
+    </div>
+  </section>
+
   <section class="slide" data-title="keys &amp; identity">
     <header class="s-head">
-      <p class="eyebrow" data-reveal style="--d:0">07 — keys &amp; identity</p>
+      <p class="eyebrow" data-reveal style="--d:0">09 — keys &amp; identity</p>
       <h2 class="h1" data-reveal style="--d:1">Two keys. Neither one ever travels.</h2>
     </header>
     <div class="s-body">
@@ -645,7 +937,7 @@ body.no-chrome .deck-ui{opacity:0;pointer-events:none}
 
   <section class="slide" data-title="verification">
     <header class="s-head">
-      <p class="eyebrow" data-reveal style="--d:0">08 — verification</p>
+      <p class="eyebrow" data-reveal style="--d:0">10 — verification</p>
       <h2 class="h1" data-reveal style="--d:1">Verify first. Decrypt only after.</h2>
     </header>
     <div class="s-body">
@@ -681,7 +973,7 @@ body.no-chrome .deck-ui{opacity:0;pointer-events:none}
 
   <section class="slide" data-title="who benefits">
     <header class="s-head">
-      <p class="eyebrow" data-reveal style="--d:0">09 — who benefits</p>
+      <p class="eyebrow" data-reveal style="--d:0">11 — who benefits</p>
       <h2 class="h1" data-reveal style="--d:1">Who benefits — and how.</h2>
     </header>
     <div class="s-body">
@@ -712,7 +1004,7 @@ body.no-chrome .deck-ui{opacity:0;pointer-events:none}
 
   <section class="slide" data-title="live demo">
     <header class="s-head">
-      <p class="eyebrow" data-reveal style="--d:0">10 — live demo</p>
+      <p class="eyebrow" data-reveal style="--d:0">12 — live demo</p>
       <h2 class="h1" data-reveal style="--d:1">Two agents, two wallets, no hints.</h2>
     </header>
     <div class="s-body">
@@ -746,7 +1038,7 @@ body.no-chrome .deck-ui{opacity:0;pointer-events:none}
             <span class="cipher">9fCq <b>· 412 B ciphertext</b> · k2A= — unreadable outside the repo</span>
             <span class="badge-lock">sealed</span>
           </div>
-          <p class="footline" style="margin-top:14px;font-size:14px">Both commits verified cross-wallet from the other's machine. The credentials inside the decision <strong>never left ciphertext</strong>.</p>
+          <p class="footline" style="margin-top:14px;font-size:14px">Both commits verified cross-wallet from the other's machine — and the same repo renders live in the viewer, verified and decrypted in the browser. The credentials inside the decision <strong>never left ciphertext</strong>.</p>
         </div>
       </div>
     </div>
@@ -754,7 +1046,7 @@ body.no-chrome .deck-ui{opacity:0;pointer-events:none}
 
   <section class="slide" data-title="privacy track">
     <header class="s-head">
-      <p class="eyebrow" data-reveal style="--d:0">11 — privacy track</p>
+      <p class="eyebrow" data-reveal style="--d:0">13 — privacy track</p>
       <h2 class="h1" data-reveal style="--d:1">This is why it belongs in the privacy track.</h2>
     </header>
     <div class="s-body">
@@ -795,13 +1087,13 @@ body.no-chrome .deck-ui{opacity:0;pointer-events:none}
 
   <section class="slide" data-title="run it">
     <div class="s-body close-center">
-      <p class="eyebrow" data-reveal style="--d:0">12 — run it</p>
+      <p class="eyebrow" data-reveal style="--d:0">14 — run it</p>
       <h2 class="h1" data-reveal style="--d:1">Context that outlives the session — without outliving the secrets.</h2>
       <div class="close-term" data-reveal style="--d:2">
         <div class="term term-dark">
-          <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="term-title">fresh clone → live in minutes</span></div>
+          <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="term-title">one-line install → live in minutes</span></div>
           <div class="term-body">
-            <p><span class="t-prompt">$</span> <span class="t-cmd">pnpm install && pnpm build</span> <span class="t-dim"># 35 tests · standalone cli + mcp</span></p>
+            <p><span class="t-prompt">$</span> <span class="t-cmd">curl -fsSL …/install.sh | bash</span> <span class="t-dim"># cogit + cogit-mcp · SHA256-verified</span></p>
             <p><span class="t-prompt">$</span> <span class="t-cmd">cogit init team-brain</span> <span class="t-dim"># group key created, mode 600</span></p>
             <p><span class="t-prompt">$</span> <span class="t-cmd">cogit invite 0xTeammate…</span> <span class="t-dim"># cogit1:… invite string</span></p>
             <p><span class="t-prompt">$</span> <span class="t-cmd">cogit commit -m <span class="t-str">"Reports: Postgres + JSONB"</span> --kind decision</span></p>
@@ -812,12 +1104,12 @@ body.no-chrome .deck-ui{opacity:0;pointer-events:none}
       <div class="stack-strip" data-reveal style="--d:3">
         <span class="chip mono">Arkiv — tiramisu testnet</span>
         <span class="chip mono">XChaCha20-Poly1305</span>
-        <span class="chip mono">viem</span>
-        <span class="chip mono">MCP · stdio</span>
-        <span class="chip mono">Node 22</span>
-        <span class="chip mono">35 tests passing</span>
+        <span class="chip mono">TS + Rust</span>
+        <span class="chip mono">MCP · 40/40 parity</span>
+        <span class="chip mono">35 + 6 tests</span>
+        <span class="chip mono">curl | bash</span>
       </div>
-      <p class="foot-small" data-reveal style="--d:4">Cogit — encrypted, wallet-signed team context on Arkiv. <span class="mono">docs: README · SPEC · MCP_SETUP</span></p>
+      <p class="foot-small" data-reveal style="--d:4">Cogit — encrypted, wallet-signed team context on Arkiv. <span class="mono">docs: README · FRICTION_LOG · MCP_SETUP</span></p>
     </div>
   </section>
 
@@ -833,7 +1125,7 @@ body.no-chrome .deck-ui{opacity:0;pointer-events:none}
     <span class="deck-hint">← → navigate · F fullscreen · C hide chrome · P print</span>
   </div>
   <div class="deck-right">
-    <span class="counter" id="counter">01 / 13</span>
+    <span class="counter" id="counter">01 / 15</span>
     <button class="ctl" id="btnPrev" aria-label="Previous slide"><svg class="ic"><use href="#i-chev-l"/></svg></button>
     <button class="ctl" id="btnNext" aria-label="Next slide"><svg class="ic"><use href="#i-chev-r"/></svg></button>
     <button class="ctl" id="btnFs" aria-label="Toggle fullscreen"><svg class="ic"><use href="#i-expand"/></svg></button>

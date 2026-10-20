@@ -12,6 +12,7 @@ import {
   runPull,
   runUse,
 } from "./commands.js";
+import { renderWelcome } from "./welcome.js";
 
 const KINDS = Object.keys(KIND_EXPIRY_DAYS) as CommitKind[];
 
@@ -79,6 +80,11 @@ async function main(): Promise<void> {
     .description("list commits with verified/invalid status")
     .option("--branch <branch>", "only this branch")
     .action(async (opts: { branch?: string }) => runLog(opts));
+
+  if (process.argv.length <= 2) {
+    console.log(renderWelcome());
+    return;
+  }
 
   await program.parseAsync(process.argv);
 }

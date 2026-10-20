@@ -150,6 +150,57 @@ with `expected ,`. Workaround: declare a struct and use it as the tuple element
 for `.with_to()/.with_input()` and `alloy::sol_types::SolEvent` for
 `decode_log`. Minor DX issues, all cost debugging time.
 
+## F-RS-13 — schemars `with` + `serde(default)` silently diverge from the zod schema
+
+Two compounding effects when deriving tool schemas with schemars 1.2 and trying
+to match a zod-authored schema byte-for-byte:
+
+- `with = "u64"` adds `"format": "uint64"` (zod has no such key), and bare
+  `#[serde(default)]` injects `"default": null` into every optional field.
+- More subtly, `schemars(with = …)` / `schema_with` **replace the field's type
+  for schema generation**, which resets required-vs-optional inference: without
+  `serde(default)` the fields become `required`.
+
+Fix that worked: keep `serde(default)` for the `required` list, and add
+`#[schemars(transform = fn)]` — transforms run as the last post-mutator — to
+delete `default`/`format` from the finished field schema:
+
+```rust
+fn ts_schema_cleanup(schema: &mut schemars::Schema) {
+    if let Some(obj) = schema.as_object_mut() {
+        obj.remove("default");
+        obj.remove("format");
+    }
+}
+```
+
+## F-RS-14 — rmcp and the TS MCP server disagree on what an error *is*
+
+TypeScript SDK 1.32 servers resolve **all** tool-call failures — zod
+validation, unknown tool, thrown exceptions — as `isError: true` results whose
+text is `MCP error -32602: …`. rmcp 3.5.1 converts only argument
+deserialization failures (`failed to deserialize parameters:` + code
+`INVALID_PARAMS`) into results; everything else is a JSON-RPC protocol error.
+With the same TS client, the TS server "succeeds with isError" where the Rust
+server throws — different client-visible behavior for identical inputs.
+
+Fix: override `ServerHandler::call_tool`, delegate to the generated router,
+and translate `Err(ErrorData)` into `CallToolResult::error` with
+`MCP error {code}: …` text (plus rewording rmcp's deserialization prefix and
+`tool not found` to the TS SDK's strings). Tools that are never called with bad
+input won't notice — but parity tests will.
+
+## F-RS-15 — zod's exact validation wording only exists in zod
+
+To get byte-equal `tools/list` schemas and error text, the Rust side had to
+mirror zod's constraint messages manually
+(`Too small: expected string to have >=1 characters at summary`). Anything
+missing-required or type-mismatched still says serde's `missing field \`branch\``
+(only the outer `MCP error …: Input validation error: Invalid arguments for tool …`
+envelope was normalized) — so agents see the same *shape* everywhere, but
+wording beyond the declared constraints differs. If a client ever parses these
+strings, that's the seam.
+
 ---
 
 ## Environment friction (not SDK bugs, but real)
