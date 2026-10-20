@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import Icon from "./Icon";
 import StageScene, { type PrivacyMode, type PrivacyPhase } from "./privacy/StageScene";
 
 const LIMITS = [3, 14, 90, 365];
@@ -11,7 +10,7 @@ const RUNNING: PrivacyPhase[] = ["write", "cross", "pull", "count"];
 
 const CAPTIONS: Record<PrivacyMode, Record<PrivacyPhase, string>> = {
   on: {
-    idle: "sealed before it leaves your side · replay anytime",
+    idle: "sealed before it leaves your side · loops while in view",
     write: "write · the body is sealed client-side with the repo group key",
     cross: "share · the sealed envelope crosses over; the key stays home",
     pull: "pull · agents verify authorship and read metadata, never the body",
@@ -40,12 +39,17 @@ export default function PrivacyStage() {
   const stageRef = useRef<HTMLDivElement | null>(null);
   const modeRef = useRef<PrivacyMode>("on");
   const phaseRef = useRef<PrivacyPhase>("idle");
-  const playedRef = useRef(false);
+  const limitRef = useRef(DEFAULT_LIMIT);
+  const inViewRef = useRef(false);
   const timers = useRef<number[]>([]);
 
   useEffect(() => {
     phaseRef.current = phase;
   }, [phase]);
+
+  useEffect(() => {
+    limitRef.current = limit;
+  }, [limit]);
 
   const clearTimers = useCallback(() => {
     for (const id of timers.current) {
@@ -116,10 +120,9 @@ export default function PrivacyStage() {
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
-          if (entry.isIntersecting && !playedRef.current && phaseRef.current === "idle") {
-            playedRef.current = true;
-            play("on", DEFAULT_LIMIT);
-            observer.disconnect();
+          inViewRef.current = entry.isIntersecting;
+          if (entry.isIntersecting && !RUNNING.includes(phaseRef.current)) {
+            play(modeRef.current, limitRef.current);
           }
         }
       },
@@ -128,8 +131,11 @@ export default function PrivacyStage() {
     observer.observe(element);
 
     const onVisibility = () => {
-      if (document.hidden && RUNNING.includes(phaseRef.current)) {
-        finish(modeRef.current);
+      if (document.hidden) {
+        clearTimers();
+        setPhase("idle");
+      } else if (inViewRef.current) {
+        play(modeRef.current, limitRef.current);
       }
     };
     document.addEventListener("visibilitychange", onVisibility);
@@ -138,13 +144,27 @@ export default function PrivacyStage() {
       document.removeEventListener("visibilitychange", onVisibility);
       clearTimers();
     };
-  }, [play, finish, clearTimers]);
+  }, [play, clearTimers]);
+
+  useEffect(() => {
+    if (reduce) {
+      return;
+    }
+    if (phase !== "expired" && phase !== "read") {
+      return;
+    }
+    const id = window.setTimeout(() => {
+      if (inViewRef.current && !document.hidden) {
+        play(modeRef.current, limitRef.current);
+      }
+    }, 3000);
+    return () => window.clearTimeout(id);
+  }, [phase, reduce, play]);
 
   const toggle = useCallback(() => {
     const next: PrivacyMode = modeRef.current === "on" ? "off" : "on";
     modeRef.current = next;
     setPrivacy(next);
-    playedRef.current = true;
     if (reduce) {
       finish(next);
       return;
@@ -156,7 +176,6 @@ export default function PrivacyStage() {
     (days: number) => {
       setLimit(days);
       setDaysLeft(days);
-      playedRef.current = true;
       if (reduce) {
         finish("on");
         return;
@@ -165,15 +184,6 @@ export default function PrivacyStage() {
     },
     [reduce, play, finish],
   );
-
-  const replay = useCallback(() => {
-    playedRef.current = true;
-    if (reduce) {
-      finish(privacy);
-      return;
-    }
-    play(privacy, limit);
-  }, [reduce, privacy, limit, play, finish]);
 
   return (
     <section className="section privacy" id="privacy">
@@ -236,11 +246,6 @@ export default function PrivacyStage() {
                 </button>
               ))}
             </div>
-
-            <button type="button" className="preplay" onClick={replay}>
-              <Icon name="i-refresh" className="ic ic-inline" />
-              Replay
-            </button>
           </div>
 
           <p className={`pstage-caption mono${privacy === "off" ? " is-bad" : ""}`} aria-live="polite">
